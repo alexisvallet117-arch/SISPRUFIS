@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Acceso</title>
+
+<style>
+
+body{
+
+font-family:Arial;
+
+background:#e5e5e5;
+
+}
+
+.contenedor{
+
+width:600px;
+
+margin:80px auto;
+
+background:#2b6f8a;
+
+padding:30px;
+
+border:3px solid #1f4f63;
+
+text-align:center;
+
+}
+
+h2{
+
+color:#ffcc00;
+
+}
+
+label{
+
+color:white;
+
+display:inline-block;
+
+width:150px;
+
+text-align:right;
+
+margin-right:10px;
+
+}
+
+input{
+
+width:300px;
+
+padding:5px;
+
+margin:10px;
+
+}
+
+button{
+
+background:#b8e0c0;
+
+padding:10px 40px;
+
+border:2px solid #4a6b54;
+
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#a0d4aa;
+
+}
+
+</style>
+
+<script>
+
+const usuarios = [
+
+{usuario:"admin", pass:"SeguridadAM"},
+
+{usuario:"Kraneo", pass:"FES123*"},
+
+{usuario:"Tenoch", pass:"FES321*"}
+
+];
+
+function validarLogin(){
+
+let usuarioIngresado=document.getElementById("usuario").value;
+
+let passIngresado=document.getElementById("pass").value;
+
+let acceso=false;
+
+for(let i=0;i<usuarios.length;i++){
+
+if(
+
+usuarios[i].usuario===usuarioIngresado &&
+
+usuarios[i].pass===passIngresado
+
+){
+
+acceso=true;
+
+break;
+
+}
+
+}
+
+if(acceso){
+
+sessionStorage.setItem("evaluador",usuarioIngresado);
+
+window.location="menu.html";
+
+}else{
+
+alert("Usuario o contraseña incorrectos");
+
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+<h2>CONTROL DE ACCESO SISTEMA DE PRUEBAS FISICAS</h2>
+
+<div>
+
+<label>EVALUADOR</label>
+
+<input type="text" id="usuario">
+
+</div>
+
+<div>
+
+<label>CONTRASEÑA</label>
+
+<input type="password" id="pass">
+
+</div>
+
+<br>
+
+<button onclick="validarLogin()">ENTRAR</button>
+
+</div>
+
+</body>
+
+</html>
