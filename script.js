@@ -1,4 +1,4 @@
-const URL_API="PEGA_AQUI_TU_URL";
+const URL_API="https://script.google.com/macros/s/AKfycbyagH4yvpypa2v8iy34bdz3FnI-2dRZo0-RGv8tWdLc_fUMZkdZZCX4I6U9lI_Fr0E/exec";
 
 function iniciarSesion(){
 
@@ -42,6 +42,10 @@ fetch(URL_API,{
 
 method:"POST",
 
+headers:{
+"Content-Type":"application/json"
+},
+
 body:JSON.stringify(datos)
 
 })
@@ -57,6 +61,8 @@ alert("Registro guardado");
 .catch(e=>{
 
 alert("Error al guardar");
+
+console.error(e);
 
 });
 
