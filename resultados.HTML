@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Resultados</title>
+
+<script src="script.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f0f0f0;
+}
+
+h2{
+text-align:center;
+margin-top:20px;
+}
+
+.contenedor{
+width:95%;
+margin:auto;
+margin-top:20px;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+border:1px solid gray;
+padding:8px;
+text-align:center;
+}
+
+th{
+background:#2b6f8a;
+color:white;
+}
+
+button{
+margin-top:10px;
+padding:12px;
+width:100%;
+background:#2b6f8a;
+color:white;
+border:none;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#1f4f63;
+}
+
+.salir{
+background:#6c757d;
+}
+
+.salir:hover{
+background:#5a6268;
+}
+
+</style>
+
+<script>
+
+window.onload = function(){
+
+let registros = JSON.parse(localStorage.getItem("registros")) || [];
+
+let tabla = "";
+
+for(let i=0;i<registros.length;i++){
+
+tabla += "<tr>" +
+
+"<td>"+(registros[i].Evaluador || "")+"</td>" +
+
+"<td>"+(registros[i].Nombre || "")+"</td>" +
+
+"<td>"+(registros[i].Tipo || "")+"</td>" +
+
+"<td>"+(registros[i]["2400m"] || "")+"</td>" +
+
+"<td>"+(registros[i].Sentadillas || "")+"</td>" +
+
+"<td>"+(registros[i].Lagartijas || "")+"</td>" +
+
+"<td>"+(registros[i].Plancha || "")+"</td>" +
+
+"<td>"+(registros[i].Barras || "")+"</td>" +
+
+"<td>"+(registros[i].Apnea || "")+"</td>" +
+
+"<td>"+(registros[i].Nado || "")+"</td>" +
+
+"<td>"+(registros[i].Flotacion || "")+"</td>" +
+
+"<td>"+(registros[i].Fecha || "")+"</td>" +
+
+"</tr>";
+
+}
+
+document.getElementById("datos").innerHTML = tabla;
+
+}
+
+function exportarExcel(){
+
+let registros = JSON.parse(localStorage.getItem("registros")) || [];
+
+if(registros.length===0){
+
+alert("No hay registros");
+
+return;
+
+}
+
+let hoja = XLSX.utils.json_to_sheet(registros);
+
+let libro = XLSX.utils.book_new();
+
+XLSX.utils.book_append_sheet(libro, hoja, "Resultados");
+
+XLSX.writeFile(libro,"resultados_pruebas_fisicas.xlsx");
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<h2>RESULTADOS DE EVALUACIONES</h2>
+
+<div class="contenedor">
+
+<table>
+
+<tr>
+
+<th>Evaluador</th>
+<th>Nombre</th>
+<th>Tipo</th>
+<th>2400m</th>
+<th>Sentadillas</th>
+<th>Lagartijas</th>
+<th>Plancha</th>
+<th>Barras</th>
+<th>Apnea</th>
+<th>Nado</th>
+<th>Flotación</th>
+<th>Fecha</th>
+
+</tr>
+
+<tbody id="datos"></tbody>
+
+</table>
+
+<button onclick="exportarExcel()">
+Descargar Excel
+</button>
+
+<button onclick="window.location='menu.html'">
+Regresar al menú
+</button>
+
+<button class="salir" onclick="cerrarSesion()">
+Cerrar sesión
+</button>
+
+</div>
+
+</body>
+
+</html>

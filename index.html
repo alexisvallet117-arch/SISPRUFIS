@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Acceso</title>
+
+<style>
+
+body{
+
+font-family:Arial;
+
+/* imagen de fondo */
+background-image:url("fondoindex.png");
+
+background-size:cover;
+
+background-position:center;
+
+background-attachment:fixed;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+height:100vh;
+
+margin:0;
+
+}
+
+/* contenedor */
+.contenedor{
+
+width:420px;
+
+padding:35px;
+
+border-radius:14px;
+
+background:rgba(43,111,138,0.92);
+
+box-shadow:0 0 25px rgba(0,0,0,0.5);
+
+text-align:center;
+
+border:3px solid #1f4f63;
+
+}
+
+/* titulo */
+h2{
+
+color:#ffcc00;
+
+margin-bottom:25px;
+
+}
+
+/* etiquetas */
+label{
+
+color:white;
+
+display:block;
+
+text-align:left;
+
+margin-top:10px;
+
+font-weight:bold;
+
+}
+
+/* campos */
+input{
+
+width:100%;
+
+padding:10px;
+
+margin-top:5px;
+
+margin-bottom:15px;
+
+border-radius:6px;
+
+border:none;
+
+background:#e8e2b0;
+
+font-size:15px;
+
+}
+
+/* boton */
+button{
+
+width:100%;
+
+padding:12px;
+
+background:#b8e0c0;
+
+border:2px solid #4a6b54;
+
+cursor:pointer;
+
+font-size:16px;
+
+border-radius:8px;
+
+transition:0.3s;
+
+}
+
+button:hover{
+
+background:#a0d4aa;
+
+transform:scale(1.03);
+
+}
+
+</style>
+
+<script>
+
+const usuarios = [
+
+{usuario:"admin", pass:"SeguridadAM"},
+
+{usuario:"Kraneo", pass:"FES123*"},
+
+{usuario:"Tenoch", pass:"FES321*"}
+
+];
+
+function validarLogin(){
+
+let usuarioIngresado=document.getElementById("usuario").value;
+
+let passIngresado=document.getElementById("pass").value;
+
+let acceso=false;
+
+for(let i=0;i<usuarios.length;i++){
+
+if(
+
+usuarios[i].usuario===usuarioIngresado &&
+
+usuarios[i].pass===passIngresado
+
+){
+
+acceso=true;
+
+break;
+
+}
+
+}
+
+if(acceso){
+
+sessionStorage.setItem("evaluador",usuarioIngresado);
+
+window.location="menu.html";
+
+}else{
+
+alert("Usuario o contraseña incorrectos");
+
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+<h2>
+CONTROL DE ACCESO
+<br>
+SISTEMA DE PRUEBAS FÍSICAS
+</h2>
+
+<label>EVALUADOR</label>
+<input type="text" id="usuario">
+
+<label>CONTRASEÑA</label>
+<input type="password" id="pass">
+
+<br>
+
+<button onclick="validarLogin()">
+ENTRAR
+</button>
+
+</div>
+
+</body>
+
+</html>
