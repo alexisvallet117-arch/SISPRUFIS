@@ -158,7 +158,7 @@ let registros = JSON.parse(localStorage.getItem("resultados")) || [];
 registros.push(datos);
 
 localStorage.setItem("resultados", JSON.stringify(registros));
-
+guardarEnNube(datos);
 // mensaje de confirmación
 alert("Resultados guardados correctamente");
 
