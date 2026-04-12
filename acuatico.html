@@ -132,7 +132,7 @@ let registros = JSON.parse(localStorage.getItem("resultados")) || [];
 registros.push(datos);
 
 localStorage.setItem("resultados", JSON.stringify(registros));
-
+guardarEnNube(datos);
 alert("Resultados guardados correctamente");
 
 document.getElementById("form").reset();
