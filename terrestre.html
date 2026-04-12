@@ -152,8 +152,17 @@ Fecha:new Date().toLocaleString()
 
 };
 
-enviarDatos(datos);
+// 🔥 GUARDADO EN LOCALSTORAGE
+let registros = JSON.parse(localStorage.getItem("resultados")) || [];
 
+registros.push(datos);
+
+localStorage.setItem("resultados", JSON.stringify(registros));
+
+// mensaje de confirmación
+alert("Resultados guardados correctamente");
+
+// limpiar formulario
 document.getElementById("form").reset();
 
 }
@@ -223,28 +232,18 @@ document.getElementById("form").reset();
 
 
 <button onclick="guardarTerrestre()">
-
 Guardar resultados
-
 </button>
-
 
 <br>
 
-
 <button onclick="window.location='menu.html'">
-
 Regresar al menú
-
 </button>
-
 
 <button class="salir" onclick="cerrarSesion()">
-
 Cerrar sesión
-
 </button>
-
 
 </div>
 
