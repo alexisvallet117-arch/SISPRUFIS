@@ -78,7 +78,8 @@ background:#5a6268;
 
 window.onload = function(){
 
-let registros = JSON.parse(localStorage.getItem("registros")) || [];
+// 🔥 CORRECCIÓN AQUÍ
+let registros = JSON.parse(localStorage.getItem("resultados")) || [];
 
 let tabla = "";
 
@@ -120,12 +121,12 @@ document.getElementById("datos").innerHTML = tabla;
 
 function exportarExcel(){
 
-let registros = JSON.parse(localStorage.getItem("registros")) || [];
+// 🔥 CORRECCIÓN AQUÍ TAMBIÉN
+let registros = JSON.parse(localStorage.getItem("resultados")) || [];
 
 if(registros.length===0){
 
 alert("No hay registros");
-
 return;
 
 }
