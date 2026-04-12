@@ -1,4 +1,12 @@
 // =========================
+// CONFIGURACIÓN
+// =========================
+
+// 🔥 PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT
+const URL_API = "PEGA_AQUI_TU_URL";
+
+
+// =========================
 // FUNCIONES GENERALES
 // =========================
 
@@ -7,7 +15,6 @@ function cerrarSesion(){
 
     sessionStorage.clear();
 
-    // 🔥 redirección correcta
     window.location = "index.html";
 
 }
@@ -24,10 +31,25 @@ function obtenerEvaluador(){
 
 
 // =========================
+// GUARDADO EN NUBE 🔥
+// =========================
+
+function guardarEnNube(datos){
+
+    fetch(URL_API, {
+        method: "POST",
+        body: JSON.stringify(datos)
+    })
+    .then(() => console.log("Guardado en nube"))
+    .catch(() => console.log("Error al guardar en nube"));
+
+}
+
+
+// =========================
 // FUNCIÓN PARA LIMPIAR DATOS (opcional)
 // =========================
 
-// ⚠️ SOLO usar si quieres borrar todos los registros
 function limpiarRegistros(){
 
     if(confirm("¿Deseas eliminar todos los registros?")){
