@@ -2,29 +2,23 @@
 // CONFIGURACIÓN
 // =========================
 
-// 🔥 PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT
-const URL_API = "PEGA_AQUI_TU_URL";
+const URL_API = "https://script.google.com/macros/s/AKfycbxGMbwP2pc1jhS6zM3hSP49a6M7WtHi2jqf0GvhYXb-L9x-VXnQnDSp6jmKCJFyDl_a/exec";
 
 
 // =========================
 // FUNCIONES GENERALES
 // =========================
 
-// Cerrar sesión
 function cerrarSesion(){
-
     sessionStorage.clear();
-
     window.location = "index.html";
-
 }
 
 
 // =========================
-// UTILIDADES (OPCIONAL)
+// UTILIDADES
 // =========================
 
-// Obtener evaluador actual
 function obtenerEvaluador(){
     return sessionStorage.getItem("evaluador") || "Sin registro";
 }
@@ -41,13 +35,13 @@ function guardarEnNube(datos){
         body: JSON.stringify(datos)
     })
     .then(() => console.log("Guardado en nube"))
-    .catch(() => console.log("Error al guardar en nube"));
+    .catch((err) => console.log("Error:", err));
 
 }
 
 
 // =========================
-// FUNCIÓN PARA LIMPIAR DATOS (opcional)
+// LIMPIAR DATOS
 // =========================
 
 function limpiarRegistros(){
@@ -55,9 +49,7 @@ function limpiarRegistros(){
     if(confirm("¿Deseas eliminar todos los registros?")){
 
         localStorage.removeItem("resultados");
-
         alert("Registros eliminados");
-
         location.reload();
 
     }
