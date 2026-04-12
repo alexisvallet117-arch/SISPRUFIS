@@ -88,11 +88,24 @@ const URL_API = "https://script.google.com/macros/s/AKfycbxGMbwP2pc1jhS6zM3hSP49
 
 window.onload = function(){
 
-fetch(URL_API)
+fetch(URL_API, {
+  method: "GET",
+  headers: {
+    "Accept": "application/json"
+  }
+})
 .then(res => res.text())
 .then(text => {
 
-let registros = JSON.parse(text);
+let registros;
+
+try{
+  registros = JSON.parse(text);
+}catch(e){
+  alert("Error al leer datos");
+  console.log(text);
+  return;
+}
 
 console.log("DATOS:", registros);
 
@@ -160,7 +173,12 @@ console.log(err);
 // 🔥 EXPORTAR EXCEL
 function exportarExcel(){
 
-fetch(URL_API)
+fetch(URL_API, {
+  method: "GET",
+  headers: {
+    "Accept": "application/json"
+  }
+})
 .then(res => res.text())
 .then(text => {
 
@@ -187,7 +205,6 @@ console.log(err);
 }
 
 </script>
-
 </head>
 
 <body>
