@@ -94,43 +94,65 @@ background:#5a6268;
 
 <script>
 
+const URL_API = "PEGA_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT";
+
 window.onload = function(){
 
-let registros = JSON.parse(localStorage.getItem("resultados")) || [];
+fetch(URL_API)
+.then(res => res.json())
+.then(registros => {
 
 let tabla = "";
 
-for(let i=0;i<registros.length;i++){
+// 🔥 empezamos desde 1 para saltar encabezados
+for(let i=1;i<registros.length;i++){
 
-let tipo = (registros[i].Tipo || "").toLowerCase();
+let fila = registros[i];
 
-// 🔵🌸 clase por sexo
+// columnas según tu orden
+let evaluador = fila[0] || "";
+let nombre = fila[1] || "";
+let tipo = (fila[2] || "").toLowerCase();
+let carrera = fila[3] || "";
+let sentadillas = fila[4] || "";
+let lagartijas = fila[5] || "";
+let plancha = fila[6] || "";
+let barras = fila[7] || "";
+let apnea = fila[8] || "";
+let nado = fila[9] || "";
+let flotacion = fila[10] || "";
+let fecha = fila[11] || "";
+
+// 🔵🌸 COLOR POR SEXO
+// ⚠️ AQUÍ USAMOS "nombre" DE SEXO SI LO AGREGAS DESPUÉS
 let claseFila = "";
+
 if(tipo === "hombre"){
 claseFila = "hombre";
-}else if(tipo === "mujer"){
+}
+if(tipo === "mujer"){
 claseFila = "mujer";
 }
 
 tabla += "<tr class='"+claseFila+"'>" +
 
-"<td>"+(registros[i].Evaluador || "")+"</td>" +
-"<td>"+(registros[i].Nombre || "")+"</td>" +
-"<td>"+(registros[i].Tipo || "")+"</td>" +
+"<td>"+evaluador+"</td>" +
+"<td>"+nombre+"</td>" +
+"<td>"+tipo+"</td>" +
 
 // 🟤 TERRESTRES
-"<td class='terrestre'>"+(registros[i]["2400m"] || "")+"</td>" +
-"<td class='terrestre'>"+(registros[i].Sentadillas || "")+"</td>" +
-"<td class='terrestre'>"+(registros[i].Lagartijas || "")+"</td>" +
-"<td class='terrestre'>"+(registros[i].Plancha || "")+"</td>" +
-"<td class='terrestre'>"+(registros[i].Barras || "")+"</td>" +
+"<td class='terrestre'>"+carrera+"</td>" +
+"<td class='terrestre'>"+sentadillas+"</td>" +
+"<td class='terrestre'>"+lagartijas+"</td>" +
+"<td class='terrestre'>"+plancha+"</td>" +
+"<td class='terrestre'>"+barras+"</td>" +
 
 // 🌊 ACUÁTICAS
-"<td class='acuatico'>"+(registros[i].Apnea || "")+"</td>" +
-"<td class='acuatico'>"+(registros[i].Nado || "")+"</td>" +
-"<td class='acuatico'>"+(registros[i].Flotacion || "")+"</td>" +
+"<td class='acuatico'>"+apnea+"</td>" +
+"<td class='acuatico'>"+nado+"</td>" +
+"<td class='acuatico'>"+flotacion+"</td>" +
 
-"<td>"+(registros[i].Fecha || "")+"</td>" +
+"<td>"+fecha+"</td>" +
 
 "</tr>";
 
@@ -138,27 +160,43 @@ tabla += "<tr class='"+claseFila+"'>" +
 
 document.getElementById("datos").innerHTML = tabla;
 
+})
+.catch(err => {
+alert("Error al cargar datos");
+console.log(err);
+});
+
 }
 
+
+// 🔥 EXPORTAR (ahora desde nube)
 function exportarExcel(){
 
-let registros = JSON.parse(localStorage.getItem("resultados")) || [];
+fetch(URL_API)
+.then(res => res.json())
+.then(data => {
 
-if(registros.length===0){
+if(data.length <= 1){
 alert("No hay registros");
 return;
 }
 
-let hoja = XLSX.utils.json_to_sheet(registros);
+// quitar encabezados
+let datos = data.slice(1);
+
+let hoja = XLSX.utils.aoa_to_sheet(data);
+
 let libro = XLSX.utils.book_new();
 
 XLSX.utils.book_append_sheet(libro, hoja, "Resultados");
+
 XLSX.writeFile(libro,"resultados_pruebas_fisicas.xlsx");
+
+});
 
 }
 
 </script>
-
 </head>
 
 <body>
