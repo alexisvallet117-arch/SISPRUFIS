@@ -4,11 +4,9 @@
 <head>
 
 <meta charset="UTF-8">
-
 <title>Resultados</title>
 
 <script src="script.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
@@ -49,6 +47,26 @@ background:#2b6f8a;
 color:white;
 }
 
+/* 🔵 Hombre */
+.hombre{
+background:#d6eaf8;
+}
+
+/* 🌸 Mujer */
+.mujer{
+background:#f9d6e5;
+}
+
+/* 🟤 Pruebas terrestres */
+.terrestre{
+background:#ecd9c6;
+}
+
+/* 🌊 Pruebas acuáticas */
+.acuatico{
+background:#d4e6f1;
+}
+
 button{
 margin-top:10px;
 padding:12px;
@@ -78,36 +96,39 @@ background:#5a6268;
 
 window.onload = function(){
 
-// 🔥 CORRECCIÓN AQUÍ
 let registros = JSON.parse(localStorage.getItem("resultados")) || [];
 
 let tabla = "";
 
 for(let i=0;i<registros.length;i++){
 
-tabla += "<tr>" +
+let tipo = (registros[i].Tipo || "").toLowerCase();
+
+// 🔵🌸 clase por sexo
+let claseFila = "";
+if(tipo === "hombre"){
+claseFila = "hombre";
+}else if(tipo === "mujer"){
+claseFila = "mujer";
+}
+
+tabla += "<tr class='"+claseFila+"'>" +
 
 "<td>"+(registros[i].Evaluador || "")+"</td>" +
-
 "<td>"+(registros[i].Nombre || "")+"</td>" +
-
 "<td>"+(registros[i].Tipo || "")+"</td>" +
 
-"<td>"+(registros[i]["2400m"] || "")+"</td>" +
+// 🟤 TERRESTRES
+"<td class='terrestre'>"+(registros[i]["2400m"] || "")+"</td>" +
+"<td class='terrestre'>"+(registros[i].Sentadillas || "")+"</td>" +
+"<td class='terrestre'>"+(registros[i].Lagartijas || "")+"</td>" +
+"<td class='terrestre'>"+(registros[i].Plancha || "")+"</td>" +
+"<td class='terrestre'>"+(registros[i].Barras || "")+"</td>" +
 
-"<td>"+(registros[i].Sentadillas || "")+"</td>" +
-
-"<td>"+(registros[i].Lagartijas || "")+"</td>" +
-
-"<td>"+(registros[i].Plancha || "")+"</td>" +
-
-"<td>"+(registros[i].Barras || "")+"</td>" +
-
-"<td>"+(registros[i].Apnea || "")+"</td>" +
-
-"<td>"+(registros[i].Nado || "")+"</td>" +
-
-"<td>"+(registros[i].Flotacion || "")+"</td>" +
+// 🌊 ACUÁTICAS
+"<td class='acuatico'>"+(registros[i].Apnea || "")+"</td>" +
+"<td class='acuatico'>"+(registros[i].Nado || "")+"</td>" +
+"<td class='acuatico'>"+(registros[i].Flotacion || "")+"</td>" +
 
 "<td>"+(registros[i].Fecha || "")+"</td>" +
 
@@ -121,22 +142,17 @@ document.getElementById("datos").innerHTML = tabla;
 
 function exportarExcel(){
 
-// 🔥 CORRECCIÓN AQUÍ TAMBIÉN
 let registros = JSON.parse(localStorage.getItem("resultados")) || [];
 
 if(registros.length===0){
-
 alert("No hay registros");
 return;
-
 }
 
 let hoja = XLSX.utils.json_to_sheet(registros);
-
 let libro = XLSX.utils.book_new();
 
 XLSX.utils.book_append_sheet(libro, hoja, "Resultados");
-
 XLSX.writeFile(libro,"resultados_pruebas_fisicas.xlsx");
 
 }
@@ -154,7 +170,6 @@ XLSX.writeFile(libro,"resultados_pruebas_fisicas.xlsx");
 <table>
 
 <tr>
-
 <th>Evaluador</th>
 <th>Nombre</th>
 <th>Tipo</th>
@@ -167,7 +182,6 @@ XLSX.writeFile(libro,"resultados_pruebas_fisicas.xlsx");
 <th>Nado</th>
 <th>Flotación</th>
 <th>Fecha</th>
-
 </tr>
 
 <tbody id="datos"></tbody>
