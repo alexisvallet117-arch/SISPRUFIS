@@ -47,16 +47,6 @@ background:#2b6f8a;
 color:white;
 }
 
-/* 🔵 Hombre */
-.hombre{
-background:#d6eaf8;
-}
-
-/* 🌸 Mujer */
-.mujer{
-background:#f9d6e5;
-}
-
 /* 🟤 Pruebas terrestres */
 .terrestre{
 background:#ecd9c6;
@@ -99,20 +89,31 @@ const URL_API = "https://script.google.com/macros/s/AKfycbxGMbwP2pc1jhS6zM3hSP49
 window.onload = function(){
 
 fetch(URL_API)
-.then(res => res.json())
-.then(registros => {
+.then(res => res.text())
+.then(text => {
+
+let registros = JSON.parse(text);
+
+console.log("DATOS:", registros);
 
 let tabla = "";
 
-// 🔥 empezamos desde 1 para saltar encabezados
+// validar si hay datos
+if(!registros || registros.length <= 1){
+document.getElementById("datos").innerHTML = "<tr><td colspan='12'>Sin registros</td></tr>";
+return;
+}
+
+// recorrer datos
 for(let i=1;i<registros.length;i++){
 
 let fila = registros[i];
 
-// columnas según tu orden
+if(!fila || fila.length === 0) continue;
+
 let evaluador = fila[0] || "";
 let nombre = fila[1] || "";
-let tipo = (fila[2] || "").toLowerCase();
+let tipo = fila[2] || "";
 let carrera = fila[3] || "";
 let sentadillas = fila[4] || "";
 let lagartijas = fila[5] || "";
@@ -123,38 +124,25 @@ let nado = fila[9] || "";
 let flotacion = fila[10] || "";
 let fecha = fila[11] || "";
 
-// 🔵🌸 COLOR POR SEXO
-// ⚠️ AQUÍ USAMOS "nombre" DE SEXO SI LO AGREGAS DESPUÉS
-let claseFila = "";
+tabla += `<tr>
 
-if(tipo === "hombre"){
-claseFila = "hombre";
-}
-if(tipo === "mujer"){
-claseFila = "mujer";
-}
+<td>${evaluador}</td>
+<td>${nombre}</td>
+<td>${tipo}</td>
 
-tabla += "<tr class='"+claseFila+"'>" +
+<td class="terrestre">${carrera}</td>
+<td class="terrestre">${sentadillas}</td>
+<td class="terrestre">${lagartijas}</td>
+<td class="terrestre">${plancha}</td>
+<td class="terrestre">${barras}</td>
 
-"<td>"+evaluador+"</td>" +
-"<td>"+nombre+"</td>" +
-"<td>"+tipo+"</td>" +
+<td class="acuatico">${apnea}</td>
+<td class="acuatico">${nado}</td>
+<td class="acuatico">${flotacion}</td>
 
-// 🟤 TERRESTRES
-"<td class='terrestre'>"+carrera+"</td>" +
-"<td class='terrestre'>"+sentadillas+"</td>" +
-"<td class='terrestre'>"+lagartijas+"</td>" +
-"<td class='terrestre'>"+plancha+"</td>" +
-"<td class='terrestre'>"+barras+"</td>" +
+<td>${fecha}</td>
 
-// 🌊 ACUÁTICAS
-"<td class='acuatico'>"+apnea+"</td>" +
-"<td class='acuatico'>"+nado+"</td>" +
-"<td class='acuatico'>"+flotacion+"</td>" +
-
-"<td>"+fecha+"</td>" +
-
-"</tr>";
+</tr>`;
 
 }
 
@@ -169,34 +157,37 @@ console.log(err);
 }
 
 
-// 🔥 EXPORTAR (ahora desde nube)
+// 🔥 EXPORTAR EXCEL
 function exportarExcel(){
 
 fetch(URL_API)
-.then(res => res.json())
-.then(data => {
+.then(res => res.text())
+.then(text => {
 
-if(data.length <= 1){
+let data = JSON.parse(text);
+
+if(!data || data.length <= 1){
 alert("No hay registros");
 return;
 }
 
-// quitar encabezados
-let datos = data.slice(1);
-
 let hoja = XLSX.utils.aoa_to_sheet(data);
-
 let libro = XLSX.utils.book_new();
 
 XLSX.utils.book_append_sheet(libro, hoja, "Resultados");
 
 XLSX.writeFile(libro,"resultados_pruebas_fisicas.xlsx");
 
+})
+.catch(err => {
+alert("Error al exportar");
+console.log(err);
 });
 
 }
 
 </script>
+
 </head>
 
 <body>
