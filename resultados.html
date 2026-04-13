@@ -125,18 +125,16 @@ if(!fila || fila.length < 6) continue;
 let evaluador = fila[0] || "";
 let nombre = fila[1] || "";
 let tipo = fila[2] || "";
-let sexo = (fila[3] || "").toLowerCase();
+let sexo = fila[3] || ""; // 🔥 NUEVO
 
 let carrera = fila[4] || "";
 let sentadillas = fila[5] || "";
 let lagartijas = fila[6] || "";
 let plancha = fila[7] || "";
 let barras = fila[8] || "";
-
 let apnea = fila[9] || "";
 let nado = fila[10] || "";
 let flotacion = fila[11] || "";
-
 let fecha = fila[12] || "";
 
 // 🔥 COLOR POR SEXO
