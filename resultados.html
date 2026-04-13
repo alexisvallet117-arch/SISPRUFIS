@@ -17,7 +17,7 @@
 
 body{
 font-family:Arial;
-background:#f0f0f0;
+background:#f0f0f1;
 }
 
 h2{
@@ -88,47 +88,33 @@ background:#5a6268;
 
 <script>
 
-console.log("JS funcionando");
-
-const URL_API = "https://script.google.com/macros/s/AKfycbxGMbwP2pc1jhS6zM3hSP49a6M7WtHi2jqf0GvhYXb-L9x-VXnQnDSp6jmKCJFyDl_a/exec";
+// 🔥 PEGA TU LINK CSV AQUÍ
+const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTNI0iBkoi9_GbbqS25R8bidVpUUMa8aR2mYB_gL0zMB4zscpmFcr6RhaIn7TkGBJqoPeteIKPm8GZB/pub?gid=0&single=true&output=csv";
 
 window.onload = function(){
 
-fetch(URL_API, {
-  method: "GET",
-  headers: {
-    "Accept": "application/json"
-  }
-})
+fetch(URL_CSV)
 .then(res => res.text())
-.then(text => {
+.then(csv => {
 
-let registros;
+console.log("CSV recibido:", csv);
 
-try{
-  registros = JSON.parse(text);
-}catch(e){
-  alert("Error al leer datos");
-  console.log(text);
-  return;
-}
-
-console.log("DATOS:", registros);
+let filas = csv.split("\n").map(f => f.split(","));
 
 let tabla = "";
 
-// validar si hay datos
-if(!registros || registros.length <= 1){
+// validar datos
+if(!filas || filas.length <= 1){
 document.getElementById("datos").innerHTML = "<tr><td colspan='12'>Sin registros</td></tr>";
 return;
 }
 
 // recorrer datos
-for(let i=1;i<registros.length;i++){
+for(let i=1;i<filas.length;i++){
 
-let fila = registros[i];
+let fila = filas[i];
 
-if(!fila || fila.length === 0) continue;
+if(!fila || fila.length < 5) continue;
 
 let evaluador = fila[0] || "";
 let nombre = fila[1] || "";
@@ -176,26 +162,21 @@ console.log(err);
 }
 
 
-// 🔥 EXPORTAR EXCEL
+// 🔥 EXPORTAR EXCEL DESDE CSV
 function exportarExcel(){
 
-fetch(URL_API, {
-  method: "GET",
-  headers: {
-    "Accept": "application/json"
-  }
-})
+fetch(URL_CSV)
 .then(res => res.text())
-.then(text => {
+.then(csv => {
 
-let data = JSON.parse(text);
+let filas = csv.split("\n").map(f => f.split(","));
 
-if(!data || data.length <= 1){
+if(!filas || filas.length <= 1){
 alert("No hay registros");
 return;
 }
 
-let hoja = XLSX.utils.aoa_to_sheet(data);
+let hoja = XLSX.utils.aoa_to_sheet(filas);
 let libro = XLSX.utils.book_new();
 
 XLSX.utils.book_append_sheet(libro, hoja, "Resultados");
@@ -215,9 +196,6 @@ console.log(err);
 </head>
 
 <body>
-
-<!-- 🔴 PRUEBA VISUAL (puedes borrarla después) -->
-<h1 style="color:red; text-align:center;">ESTA ES LA VERSION NUEVA</h1>
 
 <h2>RESULTADOS DE EVALUACIONES</h2>
 
