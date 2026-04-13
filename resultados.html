@@ -51,6 +51,16 @@ background:#2b6f8a;
 color:white;
 }
 
+/* 🔵 Hombre */
+.hombre{
+background:#d6eaf8;
+}
+
+/* 🌸 Mujer */
+.mujer{
+background:#f9d6e5;
+}
+
 /* 🟤 Pruebas terrestres */
 .terrestre{
 background:#ecd9c6;
@@ -88,7 +98,7 @@ background:#5a6268;
 
 <script>
 
-// 🔥 PEGA TU LINK CSV AQUÍ
+// 🔥 LINK CSV
 const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTNI0iBkoi9_GbbqS25R8bidVpUUMa8aR2mYB_gL0zMB4zscpmFcr6RhaIn7TkGBJqoPeteIKPm8GZB/pub?gid=0&single=true&output=csv";
 
 window.onload = function(){
@@ -97,43 +107,49 @@ fetch(URL_CSV)
 .then(res => res.text())
 .then(csv => {
 
-console.log("CSV recibido:", csv);
-
 let filas = csv.split("\n").map(f => f.split(","));
 
 let tabla = "";
 
-// validar datos
 if(!filas || filas.length <= 1){
-document.getElementById("datos").innerHTML = "<tr><td colspan='12'>Sin registros</td></tr>";
+document.getElementById("datos").innerHTML = "<tr><td colspan='13'>Sin registros</td></tr>";
 return;
 }
 
-// recorrer datos
 for(let i=1;i<filas.length;i++){
 
 let fila = filas[i];
+if(!fila || fila.length < 6) continue;
 
-if(!fila || fila.length < 5) continue;
-
+// 🔥 NUEVOS INDICES
 let evaluador = fila[0] || "";
 let nombre = fila[1] || "";
 let tipo = fila[2] || "";
-let carrera = fila[3] || "";
-let sentadillas = fila[4] || "";
-let lagartijas = fila[5] || "";
-let plancha = fila[6] || "";
-let barras = fila[7] || "";
-let apnea = fila[8] || "";
-let nado = fila[9] || "";
-let flotacion = fila[10] || "";
-let fecha = fila[11] || "";
+let sexo = (fila[3] || "").toLowerCase();
 
-tabla += `<tr>
+let carrera = fila[4] || "";
+let sentadillas = fila[5] || "";
+let lagartijas = fila[6] || "";
+let plancha = fila[7] || "";
+let barras = fila[8] || "";
+
+let apnea = fila[9] || "";
+let nado = fila[10] || "";
+let flotacion = fila[11] || "";
+
+let fecha = fila[12] || "";
+
+// 🔥 COLOR POR SEXO
+let claseFila = "";
+if(sexo === "hombre") claseFila = "hombre";
+if(sexo === "mujer") claseFila = "mujer";
+
+tabla += `<tr class="${claseFila}">
 
 <td>${evaluador}</td>
 <td>${nombre}</td>
 <td>${tipo}</td>
+<td>${sexo}</td>
 
 <td class="terrestre">${carrera}</td>
 <td class="terrestre">${sentadillas}</td>
@@ -162,7 +178,7 @@ console.log(err);
 }
 
 
-// 🔥 EXPORTAR EXCEL DESDE CSV
+// 🔥 EXPORTAR
 function exportarExcel(){
 
 fetch(URL_CSV)
@@ -207,6 +223,7 @@ console.log(err);
 <th>Evaluador</th>
 <th>Nombre</th>
 <th>Tipo</th>
+<th>Sexo</th>
 <th>2400m</th>
 <th>Sentadillas</th>
 <th>Lagartijas</th>
