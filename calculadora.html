@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de puntaje de pruebas fisicas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;       /* Azul Oscuro Slate */
+            --accent: #0284c7;        /* Azul Océano */
+            --terrestre-color: #2563eb; /* Azul Eléctrico */
+            --light-bg: #f8fafc;      
+            --white: #ffffff;
+            --gray-border: #e2e8f0;
+            --gray-text: #64748b;
+            --dark-text: #1e293b;
+            --success: #10b981;       
+            --warning: #f59e0b;       
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #dbeafe 100%);
+            color: var(--dark-text);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrapper {
+            background-color: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+            width: 100%;
+            max-width: 1100px;
+            overflow: hidden;
+            border: 1px solid var(--gray-border);
+        }
+
+        /* Encabezado */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
+            color: var(--white);
+            padding: 24px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+        }
+
+        @media (max-width: 850px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .panel-left {
+                border-right: none !important;
+                border-bottom: 2px solid var(--gray-border);
+            }
+        }
+
+        /* Panel Izquierdo (Formulario) */
+        .panel-left {
+            padding: 30px;
+            border-right: 1.5px solid var(--gray-border);
+        }
+
+        /* Selector Perfil */
+        .profile-card {
+            background-color: #f1f5f7;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-control {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-control label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control select, .form-control input {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1.5px solid #cbd5e1;
+            background-color: var(--white);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--dark-text);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control select:focus, .form-control input:focus {
+            border-color: var(--accent);
+        }
+
+        /* Pestañas */
+        .tabs {
+            display: flex;
+            background-color: #f1f5f9;
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: var(--gray-text);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.25s;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn.active-terrestre {
+            background-color: var(--terrestre-color);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        .tab-btn.active-acuatica {
+            background-color: var(--accent);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2);
+        }
+
+        /* Tarjetas de Input */
+        .input-card {
+            background-color: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.01);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .input-card .info-area {
+            flex: 1;
+        }
+
+        .input-card .info-area .title-lbl {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: block;
+        }
+
+        .input-card .info-area .sub-lbl {
+            font-size: 0.72rem;
+            color: var(--gray-text);
+        }
+
+        .input-card .input-area {
+            width: 140px;
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 6px 10px;
+            background-color: #f8fafc;
+        }
+
+        .input-card .input-area input {
+            border: none;
+            background: none;
+            outline: none;
+            width: 100%;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--dark-text);
+        }
+
+        .input-card .input-area span {
+            font-size: 0.72rem;
+            color: var(--gray-text);
+            margin-left: 5px;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        /* Botones */
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-calc {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-calc:hover {
+            background-color: #1e293b;
+        }
+
+        .btn-reset {
+            background-color: #f1f5f9;
+            color: var(--gray-text);
+            border: 1px solid var(--gray-border);
+        }
+
+        .btn-reset:hover {
+            background-color: #e2e8f0;
+            color: var(--dark-text);
+        }
+
+        /* Panel Derecho (Resultados) */
+        .panel-right {
+            padding: 30px;
+            background-color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .donut-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .donut-chart {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(closest-side, #f8fafc 79%, transparent 80% 100%),
+                        conic-gradient(var(--accent) 0%, #e2e8f0 0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: background 0.5s ease-out;
+        }
+
+        .donut-chart .score-val {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .donut-chart .score-lbl {
+            font-size: 0.7rem;
+            color: var(--gray-text);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .badge-status {
+            margin-top: 15px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: #e2e8f0;
+            color: var(--gray-text);
+            text-align: center;
+        }
+
+        /* Desglose de Pruebas */
+        .desglose-box {
+            background-color: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .desglose-box h3 {
+            font-size: 0.85rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            border-bottom: 1.5px solid var(--gray-border);
+            padding-bottom: 6px;
+        }
+
+        .desglose-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 6px 0;
+            border-bottom: 1px dashed #f1f5f9;
+        }
+
+        .desglose-row:last-child {
+            border-bottom: none;
+        }
+
+        .desglose-row span.lbl {
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+
+        .desglose-row span.pts {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Porcentajes de barra */
+        .percent-section {
+            margin-top: 15px;
+        }
+
+        .bar-container {
+            margin-bottom: 12px;
+        }
+
+        .bar-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .bar-track {
+            background-color: #e2e8f0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease-out;
+        }
+
+        .bar-fill.terrestre {
+            background-color: var(--terrestre-color);
+        }
+
+        .bar-fill.acuatica {
+            background-color: var(--accent);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="header">
+            <h1>Verificador de Puntaje Físico y Acuático</h1>
+            <p>Sistema Evaluativo destinado a verificar los puntajes obtenidos en las pruebas físicas mensuales</p>
+        </div>
+
+        <div class="main-layout">
+            <div class="panel-left">
+                <div class="profile-card">
+                    <div class="form-control">
+                        <label for="sexo">Sexo</label>
+                        <select id="sexo">
+                            <option value="hombre">Hombre ♂</option>
+                            <option value="mujer">Mujer ♀</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label for="edad">Edad</label>
+                        <select id="edad">
+                            <option value="18-29">18 a 29 años</option>
+                            <option value="30-39">30 a 39 años</option>
+                            <option value="40-49">40 a 49 años</option>
+                            <option value="50+">50 años o más</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active-terrestre" id="btn-tab-t" onclick="switchTab('terrestre')">🏃‍♂️ Pruebas Terrestres</button>
+                    <button class="tab-btn" id="btn-tab-a" onclick="switchTab('acuatica')">🏊‍♂️ Pruebas Acuáticas</button>
+                </div>
+
+                <div id="tab-terrestre" class="tab-content active">
+                    <div class="input-card">
+                        <div class="info-area">
+                            <span class="title-lbl">Carrera de 2400m</span>
+                            <span class="sub-lbl">Prueba de resistencia (George-Fisher)</span>
+                        </div>
+                        <div class="input-area">
+                            <input type="text" id="in-carrera" placeholder="10:30">
+                            <span>m:s</span>
+                        </div>
+                    </div>
+
+                    <div class="input-card">
+                        <div class="info-area">
+                            <span class="title-lbl">Sentadillas</span>
+                            <span class="sub-lbl">Máximo 100 repeticiones</span>
+                        </div>
+                        <div class="input-area">
+                            <input type="number" id="in-sentadillas" placeholder="85">
+                            <span>reps</span>
+                        </div>
+                    </div>
+
+                    <div class="input-card">
+                        <div class="info-area">
+                            <span class="title-lbl">Pechadas (Lagartijas)</span>
+                            <span class="sub-lbl">Máximo 60 repeticiones</span>
+                        </div>
+                        <div class="input-area">
+                            <input type="number" id="in-pechadas" placeholder="50">
+                            <span>reps</span>
+                        </div>
+                    </div>
+
+                    <div class="input-card">
+                        <div class="info-area">
+                            <span class="title-lbl">Plancha Frontal</span>
+                            <span class="sub-lbl">Resistencia de abdomen</span>
+                        </div>
+                        <div class="input-area">
+                            <input type="text" id="in-plancha" placeholder="02:30">
+                            <span>m:s</span>
+                        </div>
+                    </div>
+
+                    <div class="input-card">
+                        <div class="info-area">
+                            <span class="title-lbl">Dominadas (Barras)</span>
+                            <span class="sub-lbl">Hombres Máx 12 / Mujeres Máx 7</span>
+                        </div>
+                        <div class="input-area">
+                            <input type="number" id="in-dominadas" placeholder="10">
+                            <span>reps</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-acuatica" class="tab-content">
+                    <div class="input-card">
+                        <div class="info-area">
+                            <span class="title-lbl">Nado 200m (Tiempo)</span>
+                            <span class="sub-lbl">Prueba de nado libre</span>
+                        </div>
+                        <div class="input-area">
+                            <input type="text" id="in-nado" placeholder="06:30">
+                            <span>m:s</span>
+                        </div>
+                    </div>
+
+                    <div class="input-card">
+                        <div class="info-area">
+                            <span class="title-lbl">Apnea 25m</span>
+                            <span class="sub-lbl">Recorrido subacuático en metros</span>
+                        </div>
+                        <div class="input-area">
+                            <input type="number" step="0.5" id="in-apnea" placeholder="20">
+                            <span>mts</span>
+                        </div>
+                    </div>
+
+                    <div class="input-card">
+                        <div class="info-area">
+                            <span class="title-lbl">Flotación</span>
+                            <span class="sub-lbl">Permanencia estática en agua</span>
+                        </div>
+                        <div class="input-area">
+                            <input type="text" id="in-flotacion" placeholder="08:00">
+                            <span>m:s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-reset" onclick="resetForm()">Limpiar</button>
+                    <button class="btn btn-calc" onclick="calculateAll()">Calcular Resultados</button>
+                </div>
+            </div>
+
+            <div class="panel-right">
+                <div class="donut-container">
+                    <div class="donut-chart" id="total-donut">
+                        <span class="score-val" id="total-val">0%</span>
+                        <span class="score-lbl">Promedio</span>
+                    </div>
+                    <span class="badge-status" id="general-badge">INGRESA TUS MARCAS</span>
+                </div>
+
+                <div class="desglose-box">
+                    <h3>Puntos Obtenidos</h3>
+                    <div id="desglose-rows-container">
+                        <div class="desglose-row"><span class="lbl">Carrera (2400m)</span><span class="pts" id="pts-carrera">-</span></div>
+                        <div class="desglose-row"><span class="lbl">Sentadillas</span><span class="pts" id="pts-sentadillas">-</span></div>
+                        <div class="desglose-row"><span class="lbl">Pechadas</span><span class="pts" id="pts-pechadas">-</span></div>
+                        <div class="desglose-row"><span class="lbl">Plancha Frontal</span><span class="pts" id="pts-plancha">-</span></div>
+                        <div class="desglose-row"><span class="lbl">Dominadas</span><span class="pts" id="pts-dominadas">-</span></div>
+                        <div class="desglose-row"><span class="lbl">Nado 200m</span><span class="pts" id="pts-nado">-</span></div>
+                        <div class="desglose-row"><span class="lbl">Apnea</span><span class="pts" id="pts-apnea">-</span></div>
+                        <div class="desglose-row"><span class="lbl">Flotación</span><span class="pts" id="pts-flotacion">-</span></div>
+                    </div>
+                </div>
+
+                <div class="percent-section">
+                    <div class="bar-container">
+                        <div class="bar-info">
+                            <span>Porcentaje Terrestre</span>
+                            <span id="lbl-pct-terrestre">0%</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill terrestre" id="bar-pct-terrestre"></div>
+                        </div>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar-info">
+                            <span>Porcentaje Acuático</span>
+                            <span id="lbl-pct-acuatica">0%</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill acuatica" id="bar-pct-acuatica"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. TABLAS DE EVALUACIÓN OFICIALES 
+        const tablaCarrera = {
+            "18-29": {
+                "hombre": [
+                    { t: 641, p: 30 }, { t: 642, p: 28.5 }, { t: 654, p: 27 }, { t: 670, p: 25.5 }, { t: 682, p: 24 },
+                    { t: 694, p: 22.5 }, { t: 706, p: 21 }, { t: 718, p: 19.5 }, { t: 730, p: 18 }, { t: 742, p: 16.5 },
+                    { t: 754, p: 15 }, { t: 766, p: 13.5 }, { t: 778, p: 12 }, { t: 790, p: 10.5 }, { t: 802, p: 9 },
+                    { t: 814, p: 7.5 }, { t: 826, p: 6 }, { t: 838, p: 4.5 }, { t: 850, p: 3 }, { t: 862, p: 1.5 }, { t: Infinity, p: 0 }
+                ],
+                "mujer": [
+                    { t: 651, p: 30 }, { t: 652, p: 28.5 }, { t: 664, p: 27 }, { t: 676, p: 25.5 }, { t: 688, p: 24 },
+                    { t: 700, p: 22.5 }, { t: 712, p: 21 }, { t: 724, p: 19.5 }, { t: 736, p: 18 }, { t: 748, p: 16.5 },
+                    { t: 760, p: 15 }, { t: 772, p: 13.5 }, { t: 784, p: 12 }, { t: 796, p: 10.5 }, { t: 808, p: 9 },
+                    { t: 820, p: 7.5 }, { t: 832, p: 6 }, { t: 844, p: 4.5 }, { t: 856, p: 3 }, { t: 868, p: 1.5 }, { t: Infinity, p: 0 }
+                ]
+            },
+            "30-39": {
+                "hombre": [
+                    { t: 653, p: 30 }, { t: 654, p: 28.5 }, { t: 668, p: 27 }, { t: 682, p: 25.5 }, { t: 696, p: 24 },
+                    { t: 710, p: 22.5 }, { t: 724, p: 21 }, { t: 738, p: 19.5 }, { t: 752, p: 18 }, { t: 766, p: 16.5 },
+                    { t: 780, p: 15 }, { t: 794, p: 13.5 }, { t: 808, p: 12 }, { t: 822, p: 10.5 }, { t: 836, p: 9 },
+                    { t: 850, p: 7.5 }, { t: 864, p: 6 }, { t: 878, p: 4.5 }, { t: 892, p: 3 }, { t: 906, p: 1.5 }, { t: Infinity, p: 0 }
+                ],
+                "mujer": [
+                    { t: 712, p: 30 }, { t: 713, p: 28.5 }, { t: 735, p: 27 }, { t: 757, p: 25.5 }, { t: 779, p: 24 },
+                    { t: 801, p: 22.5 }, { t: 823, p: 21 }, { t: 845, p: 19.5 }, { t: 867, p: 18 }, { t: 889, p: 16.5 },
+                    { t: 911, p: 15 }, { t: 933, p: 13.5 }, { t: 955, p: 12 }, { t: 977, p: 10.5 }, { t: 999, p: 9 },
+                    { t: 1021, p: 7.5 }, { t: 1043, p: 6 }, { t: 1065, p: 4.5 }, { t: 1087, p: 3 }, { t: 1109, p: 1.5 }, { t: Infinity, p: 0 }
+                ]
+            },
+            "40-49": {
+                "hombre": [
+                    { t: 706, p: 30 }, { t: 707, p: 28.5 }, { t: 723, p: 27 }, { t: 739, p: 25.5 }, { t: 755, p: 24 },
+                    { t: 771, p: 22.5 }, { t: 787, p: 21 }, { t: 803, p: 19.5 }, { t: 819, p: 18 }, { t: 835, p: 16.5 },
+                    { t: 851, p: 15 }, { t: 867, p: 13.5 }, { t: 883, p: 12 }, { t: 899, p: 10.5 }, { t: 915, p: 9 },
+                    { t: 931, p: 7.5 }, { t: 947, p: 6 }, { t: 963, p: 4.5 }, { t: 979, p: 3 }, { t: 995, p: 1.5 }, { t: Infinity, p: 0 }
+                ],
+                "mujer": [
+                    { t: 772, p: 30 }, { t: 773, p: 28.5 }, { t: 794, p: 27 }, { t: 815, p: 25.5 }, { t: 836, p: 24 },
+                    { t: 857, p: 22.5 }, { t: 878, p: 21 }, { t: 899, p: 19.5 }, { t: 920, p: 18 }, { t: 941, p: 16.5 },
+                    { t: 962, p: 15 }, { t: 983, p: 13.5 }, { t: 1004, p: 12 }, { t: 1025, p: 10.5 }, { t: 1046, p: 9 },
+                    { t: 1067, p: 7.5 }, { t: 1088, p: 6 }, { t: 1109, p: 4.5 }, { t: 1130, p: 3 }, { t: 1151, p: 1.5 }, { t: Infinity, p: 0 }
+                ]
+            },
+            "50+": {
+                "hombre": [
+                    { t: 746, p: 30 }, { t: 747, p: 28.5 }, { t: 764, p: 27 }, { t: 781, p: 25.5 }, { t: 798, p: 24 },
+                    { t: 815, p: 22.5 }, { t: 832, p: 21 }, { t: 849, p: 19.5 }, { t: 866, p: 18 }, { t: 883, p: 16.5 },
+                    { t: 900, p: 15 }, { t: 917, p: 13.5 }, { t: 934, p: 12 }, { t: 951, p: 10.5 }, { t: 968, p: 9 },
+                    { t: 985, p: 7.5 }, { t: 1002, p: 6 }, { t: 1019, p: 4.5 }, { t: 1036, p: 3 }, { t: 1053, p: 1.5 }, { t: Infinity, p: 0 }
+                ],
+                "mujer": [
+                    { t: 812, p: 30 }, { t: 813, p: 28.5 }, { t: 846, p: 27 }, { t: 879, p: 25.5 }, { t: 912, p: 24 },
+                    { t: 945, p: 22.5 }, { t: 978, p: 21 }, { t: 1011, p: 19.5 }, { t: 1044, p: 18 }, { t: 1077, p: 16.5 },
+                    { t: 1110, p: 15 }, { t: 1143, p: 13.5 }, { t: 1176, p: 12 }, { t: 1209, p: 10.5 }, { t: 1242, p: 9 },
+                    { t: 1275, p: 7.5 }, { t: 1308, p: 6 }, { t: 1341, p: 4.5 }, { t: 1374, p: 3 }, { t: 1407, p: 1.5 }, { t: Infinity, p: 0 }
+                ]
+            }
+        };
+
+        // Sentadillas (Tabla A-3) - Ambos sexos (Máx 15 pts)
+        const tablaSentadillas = [
+            { limit: 100, pts: 15 }, { limit: 90, pts: 14 }, { limit: 85, pts: 13 },
+            { limit: 80,  pts: 12 }, { limit: 75, pts: 11 }, { limit: 70, pts: 10 },
+            { limit: 60,  pts: 8 },  { limit: 50, pts: 6 },  { limit: 40, pts: 4 },
+            { limit: 0,   pts: 0 }
+        ];
+
+        // Pechadas / Lagartijas (Tabla A-4) (Máx 20 pts)
+        const tablaPechadas = {
+            "hombre": [
+                { limit: 60, pts: 20 }, { limit: 55, pts: 18 }, { limit: 50, pts: 16 },
+                { limit: 45, pts: 17 }, { limit: 40, pts: 15 }, { limit: 35, pts: 13 },
+                { limit: 30, pts: 11 }, { limit: 25, pts: 9 },  { limit: 20, pts: 7 },
+                { limit: 15, pts: 5 },  { limit: 10, pts: 3 },  { limit: 1,  pts: 2 },
+                { limit: 0,  pts: 0 }
+            ],
+            "mujer": [
+                { limit: 45, pts: 20 }, { limit: 40, pts: 18 }, { limit: 35, pts: 16 },
+                { limit: 30, pts: 17 }, { limit: 25, pts: 15 }, { limit: 20, pts: 13 },
+                { limit: 15, pts: 11 }, { limit: 10, pts: 9 },  { limit: 5,  pts: 7 },
+                { limit: 3,  pts: 5 },  { limit: 2,  pts: 3 },  { limit: 1,  pts: 2 },
+                { limit: 0,  pts: 0 }
+            ]
+        };
+
+        // Dominadas (Tabla A-5) (Máx 20 pts)
+        const tablaDominadas = {
+            "hombre": [
+                { limit: 12, pts: 20 }, { limit: 11, pts: 18 }, { limit: 10, pts: 16 },
+                { limit: 9,  pts: 17 }, { limit: 8,  pts: 15 }, { limit: 7,  pts: 13 },
+                { limit: 6,  pts: 11 }, { limit: 5,  pts: 9 },  { limit: 4,  pts: 7 },
+                { limit: 3,  pts: 5 },  { limit: 2,  pts: 3 },  { limit: 1,  pts: 2 },
+                { limit: 0,  pts: 0 }
+            ],
+            "mujer": [
+                { limit: 7, pts: 20 }, { limit: 6, pts: 17 }, { limit: 5, pts: 14 },
+                { limit: 4, pts: 11 }, { limit: 3, pts: 9 },  { limit: 2, pts: 5 },
+                { limit: 1, pts: 2 },  { limit: 0, pts: 0 }
+            ]
+        };
+
+        // Plancha Frontal (Tabla A-6) (Máx 15 pts)
+        const tablaPlancha = {
+            "hombre": [
+                { limit: 180, pts: 15 }, { limit: 160, pts: 10 }, { limit: 140, pts: 9 },
+                { limit: 120, pts: 8 },  { limit: 100, pts: 7 },  { limit: 80,  pts: 6 },
+                { limit: 60,  pts: 5 },  { limit: 40,  pts: 4 },  { limit: 30,  pts: 3.5 },
+                { limit: 20,  pts: 3 },  { limit: 10,  pts: 2.5 }, { limit: 5,   pts: 2 },
+                { limit: 0,   pts: 0 }
+            ],
+            "mujer": [
+                { limit: 150, pts: 15 }, { limit: 135, pts: 10 }, { limit: 120, pts: 9 },
+                { limit: 105, pts: 7 },  { limit: 90,  pts: 5 },  { limit: 85,  pts: 4 },
+                { limit: 60,  pts: 3.5 }, { limit: 45,  pts: 3 },  { limit: 30,  pts: 2.5 },
+                { limit: 25,  pts: 2 },  { limit: 0,   pts: 0 }
+            ]
+        };
+
+        // Flotación (Tabla A-7) (Máx 30 pts)
+        const tablaFlotacion = [
+            { limit: 600, pts: 30 }, { limit: 540, pts: 26 }, { limit: 480, pts: 25 },
+            { limit: 420, pts: 24 }, { limit: 360, pts: 22 }, { limit: 300, pts: 20 },
+            { limit: 240, pts: 16 }, { limit: 180, pts: 12 }, { limit: 120, pts: 8 },
+            { limit: 60,  pts: 4 },  { limit: 0,   pts: 0 }
+        ];
+
+        // Natación 200m (Tabla A-8) (Máx 40 pts)
+        const tablaNado = [
+            { limit: 360, pts: 40 }, { limit: 390, pts: 36 }, { limit: 420, pts: 32 },
+            { limit: 450, pts: 28 }, { limit: 480, pts: 24 }, { limit: 510, pts: 20 },
+            { limit: 540, pts: 16 }, { limit: Infinity, pts: 0 }
+        ];
+
+        // Apnea 25m (Tabla A-9) (Máx 20 pts)
+        const tablaApnea = [
+            { limit: 25.00, pts: 20 }, { limit: 22.50, pts: 18 }, { limit: 20.00, pts: 16 },
+            { limit: 17.50, pts: 14 }, { limit: 15.00, pts: 12 }, { limit: 12.50, pts: 10 },
+            { limit: 10.00, pts: 8 },  { limit: 7.50,  pts: 6 },  { limit: 5.00,  pts: 4 },
+            { limit: 0,     pts: 0 }
+        ];
+
+        // 2. INTERACTIVIDAD DE PESTAÑAS
+        function switchTab(type) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active-terrestre', 'active-acuatica');
+            });
+
+            const btnT = document.getElementById('btn-tab-t');
+            const btnA = document.getElementById('btn-tab-a');
+
+            if (type === 'terrestre') {
+                document.getElementById('tab-terrestre').classList.add('active');
+                btnT.classList.add('active-terrestre');
+            } else {
+                document.getElementById('tab-acuatica').classList.add('active');
+                btnA.classList.add('active-acuatica');
+            }
+        }
+
+        // Helper para convertir formato "MM:SS" o "MM" a segundos
+        function parseTimeToSeconds(val) {
+            if (!val || val.trim() === "") return null;
+            if (val.includes(':')) {
+                const parts = val.split(':');
+                return (parseInt(parts[0], 10) * 60) + (parseInt(parts[1], 10) || 0);
+            }
+            return parseInt(val, 10) * 60;
+        }
+
+        // 3. LÓGICA DE CÁLCULO DINÁMICO
+        function calculateAll() {
+            const sexo = document.getElementById('sexo').value;
+            const edad = document.getElementById('edad').value;
+
+            // --- CÁLCULO TERRESTRE ---
+            // Carrera 2400m
+            const valCarrera = parseTimeToSeconds(document.getElementById('in-carrera').value);
+            let ptsCarrera = 0;
+            if (valCarrera !== null) {
+                const escala = tablaCarrera[edad][sexo];
+                for (const row of escala) {
+                    if (valCarrera <= row.t) {
+                        ptsCarrera = row.p;
+                        break;
+                    }
+                }
+            }
+
+            // Sentadillas
+            const valSentadillas = parseInt(document.getElementById('in-sentadillas').value, 10);
+            let ptsSentadillas = 0;
+            if (!isNaN(valSentadillas)) {
+                for (const row of tablaSentadillas) {
+                    if (valSentadillas >= row.limit) {
+                        ptsSentadillas = row.pts;
+                        break;
+                    }
+                }
+            }
+
+            // Pechadas
+            const valPechadas = parseInt(document.getElementById('in-pechadas').value, 10);
+            let ptsPechadas = 0;
+            if (!isNaN(valPechadas)) {
+                for (const row of tablaPechadas[sexo]) {
+                    if (valPechadas >= row.limit) {
+                        ptsPechadas = row.pts;
+                        break;
+                    }
+                }
+            }
+
+            // Plancha
+            const valPlancha = parseTimeToSeconds(document.getElementById('in-plancha').value);
+            let ptsPlancha = 0;
+            if (valPlancha !== null) {
+                for (const row of tablaPlancha[sexo]) {
+                    if (valPlancha >= row.limit) {
+                        ptsPlancha = row.pts;
+                        break;
+                    }
+                }
+            }
+
+            // Dominadas
+            const valDominadas = parseInt(document.getElementById('in-dominadas').value, 10);
+            let ptsDominadas = 0;
+            if (!isNaN(valDominadas)) {
+                for (const row of tablaDominadas[sexo]) {
+                    if (valDominadas >= row.limit) {
+                        ptsDominadas = row.pts;
+                        break;
+                    }
+                }
+            }
+
+            // --- CÁLCULO ACUÁTICO ---
+            // Nado 200m
+            const valNado = parseTimeToSeconds(document.getElementById('in-nado').value);
+            let ptsNado = 0;
+            if (valNado !== null) {
+                for (const row of tablaNado) {
+                    if (valNado <= row.limit) {
+                        ptsNado = row.pts;
+                        break;
+                    }
+                }
+            }
+
+            // Apnea
+            const valApnea = parseFloat(document.getElementById('in-apnea').value);
+            let ptsApnea = 0;
+            if (!isNaN(valApnea)) {
+                for (const row of tablaApnea) {
+                    if (valApnea >= row.limit) {
+                        ptsApnea = row.pts;
+                        break;
+                    }
+                }
+            }
+
+            // Flotación
+            const valFlotacion = parseTimeToSeconds(document.getElementById('in-flotacion').value);
+            let ptsFlotacion = 0;
+            if (valFlotacion !== null) {
+                for (const row of tablaFlotacion) {
+                    if (valFlotacion >= row.limit) {
+                        ptsFlotacion = row.pts;
+                        break;
+                    }
+                }
+            }
+
+            // --- CÁLCULO DE PORCENTAJES (LÓGICA MATEMÁTICA) ---
+            // Terrestres se evalúan sobre 100 puntos totales (30 + 15 + 20 + 15 + 20)
+            const totalTerrestrePts = ptsCarrera + ptsSentadillas + ptsPechadas + ptsPlancha + ptsDominadas;
+            const pctTerrestre = Math.round((totalTerrestrePts / 100) * 100);
+
+            // Acuáticas se evalúan sobre 90 puntos totales (40 + 20 + 30)
+            const totalAcuaticoPts = ptsNado + ptsApnea + ptsFlotacion;
+            const pctAcuatico = Math.round((totalAcuaticoPts / 90) * 100);
+
+            // Promedio total de ambas disciplinas
+            const promedioTotal = Math.round((pctTerrestre + pctAcuatico) / 2);
+
+            // --- RENDERIZADO EN INTERFAZ ---
+            document.getElementById('pts-carrera').textContent = ptsCarrera + " / 30";
+            document.getElementById('pts-sentadillas').textContent = ptsSentadillas + " / 15";
+            document.getElementById('pts-pechadas').textContent = ptsPechadas + " / 20";
+            document.getElementById('pts-plancha').textContent = ptsPlancha + " / 15";
+            document.getElementById('pts-dominadas').textContent = ptsDominadas + " / 20";
+            
+            document.getElementById('pts-nado').textContent = ptsNado + " / 40";
+            document.getElementById('pts-apnea').textContent = ptsApnea + " / 20";
+            document.getElementById('pts-flotacion').textContent = ptsFlotacion + " / 30";
+
+            // Barras horizontales
+            document.getElementById('lbl-pct-terrestre').textContent = pctTerrestre + "%";
+            document.getElementById('bar-pct-terrestre').style.width = pctTerrestre + "%";
+
+            document.getElementById('lbl-pct-acuatica').textContent = pctAcuatico + "%";
+            document.getElementById('bar-pct-acuatica').style.width = pctAcuatico + "%";
+
+            // Gráfico Dona central
+            document.getElementById('total-val').textContent = promedioTotal + "%";
+            document.getElementById('total-donut').style.background = `
+                radial-gradient(closest-side, #f8fafc 79%, transparent 80% 100%),
+                conic-gradient(var(--accent) ${promedioTotal}%, #e2e8f0 0)
+            `;
+
+            // Badge Evaluativo
+            const badge = document.getElementById('general-badge');
+            if (promedioTotal >= 90) {
+                badge.textContent = "EXCELENTE DESEMPEÑO";
+                badge.style.backgroundColor = "#d1fae5";
+                badge.style.color = "#065f46";
+            } else if (promedioTotal >= 75) {
+                badge.textContent = "BUEN DESEMPEÑO";
+                badge.style.backgroundColor = "#eff6ff";
+                badge.style.color = "#1e40af";
+            } else if (promedioTotal >= 60) {
+                badge.textContent = "DESEMPEÑO REGULAR";
+                badge.style.backgroundColor = "#fef3c7";
+                badge.style.color = "#92400e";
+            } else {
+                badge.textContent = "INSUFICIENTE";
+                badge.style.backgroundColor = "#fee2e2";
+                badge.style.color = "#991b1b";
+            }
+        }
+
+        // Resetear formulario
+        function resetForm() {
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('.pts').forEach(el => el.textContent = '-');
+            document.getElementById('total-val').textContent = '0%';
+            document.getElementById('total-donut').style.background = `
+                radial-gradient(closest-side, #f8fafc 79%, transparent 80% 100%),
+                conic-gradient(var(--accent) 0%, #e2e8f0 0)
+            `;
+            document.getElementById('general-badge').textContent = 'INGRESA TUS MARCAS';
+            document.getElementById('general-badge').style.backgroundColor = '#e2e8f0';
+            document.getElementById('general-badge').style.color = 'var(--gray-text)';
+            
+            document.getElementById('lbl-pct-terrestre').textContent = '0%';
+            document.getElementById('bar-pct-terrestre').style.width = '0%';
+            document.getElementById('lbl-pct-acuatica').textContent = '0%';
+            document.getElementById('bar-pct-acuatica').style.width = '0%';
+        }
+    </script>
+</body>
+</html>
