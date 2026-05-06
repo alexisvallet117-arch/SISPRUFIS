@@ -1,214 +1,232 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
-<meta charset="UTF-8">
-
-<title>Acceso</title>
-
-<style>
-
-body{
-
-font-family:Arial;
-
-/* imagen de fondo */
-background-image:url("fondoindex.png");
-
-background-size:cover;
-
-background-position:center;
-
-background-attachment:fixed;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-height:100vh;
-
-margin:0;
-
-}
-
-/* contenedor */
-.contenedor{
-
-width:420px;
-
-padding:35px;
-
-border-radius:14px;
-
-background:rgba(43,111,138,0.92);
-
-box-shadow:0 0 25px rgba(0,0,0,0.5);
-
-text-align:center;
-
-border:3px solid #1f4f63;
-
-}
-
-/* titulo */
-h2{
-
-color:#ffcc00;
-
-margin-bottom:25px;
-
-}
-
-/* etiquetas */
-label{
-
-color:white;
-
-display:block;
-
-text-align:left;
-
-margin-top:10px;
-
-font-weight:bold;
-
-}
-
-/* campos */
-input{
-
-width:100%;
-
-padding:10px;
-
-margin-top:5px;
-
-margin-bottom:15px;
-
-border-radius:6px;
-
-border:none;
-
-background:#e8e2b0;
-
-font-size:15px;
-
-}
-
-/* boton */
-button{
-
-width:100%;
-
-padding:12px;
-
-background:#b8e0c0;
-
-border:2px solid #4a6b54;
-
-cursor:pointer;
-
-font-size:16px;
-
-border-radius:8px;
-
-transition:0.3s;
-
-}
-
-button:hover{
-
-background:#a0d4aa;
-
-transform:scale(1.03);
-
-}
-
-</style>
-
-<script>
-
-const usuarios = [
-
-{usuario:"admin", pass:"SeguridadAM"},
-
-{usuario:"Kraneo", pass:"FES123*"},
-
-{usuario:"Tenoch", pass:"FES321*"}
-
-];
-
-function validarLogin(){
-
-let usuarioIngresado=document.getElementById("usuario").value;
-
-let passIngresado=document.getElementById("pass").value;
-
-let acceso=false;
-
-for(let i=0;i<usuarios.length;i++){
-
-if(
-
-usuarios[i].usuario===usuarioIngresado &&
-
-usuarios[i].pass===passIngresado
-
-){
-
-acceso=true;
-
-break;
-
-}
-
-}
-
-if(acceso){
-
-sessionStorage.setItem("evaluador",usuarioIngresado);
-
-window.location="menu.html";
-
-}else{
-
-alert("Usuario o contraseña incorrectos");
-
-}
-
-}
-
-</script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - Sistema de Pruebas Físicas</title>
+    <style>
+        /* Reseteo y caja inteligente */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            /* Fondo militar (usamos una imagen de stock similar por seguridad) */
+            background-image: url("https://images.unsplash.com/photo-1590218768560-6415518b3353?q=80&w=1920&auto=format&fit=crop");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Contenedor principal de la tarjeta de login (Azul Verdoso) */
+        .tarjeta-login {
+            width: 100%;
+            max-width: 420px;
+            background-color: rgba(30, 81, 107, 0.95); /* Azul verdoso con transparencia */
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid #14465d;
+        }
+
+        /* Cabecera con texto amarillo */
+        .cabecera {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .cabecera h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f6e05e; /* Texto amarillo */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+
+        /* Cuerpo del formulario */
+        .cuerpo-formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .grupo-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Etiquetas limpias en blanco/gris suave */
+        label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        /* Inputs estilizados */
+        input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            color: #1a202c;
+            background-color: #f1f5f9;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #f6e05e; /* Foco amarillo */
+        }
+
+        /* Botón "ENTRAR" principal (Verde Suave) */
+        .btn-entrar {
+            width: 100%;
+            padding: 12px;
+            background-color: #cbdcbf; /* Verde muy suave */
+            color: #1a202c;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .btn-entrar:hover {
+            background-color: #b9cfac;
+        }
+
+        /* Separador visual opcional */
+        .separador {
+            text-align: center;
+            margin: 20px 0;
+            color: #cbd5e1;
+            font-size: 0.8rem;
+            position: relative;
+        }
+        .separador::before, .separador::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background-color: rgba(203, 213, 225, 0.3);
+        }
+        .separador::before { left: 0; }
+        .separador::after { right: 0; }
+
+        /* Botón de acceso directo (Banner Amarillo) */
+        .btn-acceso-directo {
+            width: 100%;
+            padding: 18px;
+            background-color: #ecc94b; /* Amarillo vibrante */
+            color: #1a202c;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 4px 10px rgba(236, 201, 75, 0.4);
+            text-align: center;
+        }
+
+        .btn-acceso-directo:hover {
+            background-color: #dbb33b;
+        }
+    </style>
+
+    <script>
+        // --- TU ESTRUCTURA DE USUARIOS ORIGINAL SE MANTIENE INTACTA ---
+        const usuarios = [
+            {usuario:"admin", pass:"SeguridadAM"},
+            {usuario:"Kraneo", pass:"FES123*"},
+            {usuario:"Tenoch", pass:"FES321*"}
+            // Aquí puedes seguir agregando tus usuarios
+        ];
+
+        function validarLogin(event) {
+            // Evita que la página se recargue automáticamente
+            event.preventDefault(); 
+
+            const usuarioIngresado = document.getElementById("usuario").value.trim();
+            const passIngresado = document.getElementById("pass").value;
+            let acceso = false;
+
+            // --- TU LÓGICA DE VALIDACIÓN SE MANTIENE INTACTA ---
+            for (let i = 0; i < usuarios.length; i++) {
+                if (
+                    usuarios[i].usuario === usuarioIngresado &&
+                    usuarios[i].pass === passIngresado
+                ) {
+                    acceso = true;
+                    break;
+                }
+            }
+
+            if (acceso) {
+                // Guarda la sesión del evaluador actual (TU LÓGICA ORIGINAL)
+                sessionStorage.setItem("evaluador", usuarioIngresado);
+                
+                // Redirige a la página de menú (TU LÓGICA ORIGINAL)
+                // Nota: Asegúrate de tener "menu.html" o cambia la ruta aquí si es necesario
+                window.location.href = "menu.html";
+            } else {
+                alert("Usuario o contraseña incorrectos. Por favor, intente de nuevo.");
+            }
+        }
+
+        // --- NUEVA FUNCIÓN PARA EL ACCESO DIRECTO ---
+        function accesoDirectoCalculadora() {
+            // Redirige directamente a la calculadora sin validar
+            window.location.href = "calculadora.html";
+        }
+    </script>
 </head>
-
 <body>
 
-<div class="contenedor">
+<div class="tarjeta-login">
+    <div class="cabecera">
+        <h2>CONTROL DE ACCESO<br>SISTEMA DE PRUEBAS FÍSICAS</h2>
+    </div>
 
-<h2>
-CONTROL DE ACCESO
-<br>
-SISTEMA DE PRUEBAS FÍSICAS
-</h2>
+    <div class="cuerpo-formulario">
+        <form onsubmit="validarLogin(event)">
+            <div class="grupo-input">
+                <label for="usuario">Evaluador</label>
+                <input type="text" id="usuario" placeholder="Ej. admin" required autocomplete="username">
+            </div>
 
-<label>EVALUADOR</label>
-<input type="text" id="usuario">
+            <div class="grupo-input">
+                <label for="pass">Contraseña</label>
+                <input type="password" id="pass" placeholder="••••••••" required autocomplete="current-password">
+            </div>
 
-<label>CONTRASEÑA</label>
-<input type="password" id="pass">
+            <button type="submit" class="btn-entrar">
+                ENTRAR
+            </button>
+        </form>
 
-<br>
+        <div class="separador">ó</div>
 
-<button onclick="validarLogin()">
-ENTRAR
-</button>
-
+        <button onclick="accesoDirectoCalculadora()" class="btn-acceso-directo">
+            Calculadora de puntaje
+        </button>
+    </div>
 </div>
 
 </body>
-
 </html>
