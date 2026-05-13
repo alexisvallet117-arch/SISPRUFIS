@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Resultados</title>
+    <title>Resultados de Evaluaciones</title>
     
+    <!-- Librerías Externas -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <!-- Google Fonts para un look más profesional -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
@@ -16,8 +16,10 @@
             --bg: #f8fafc;
             --text: #334155;
             --border: #e2e8f0;
-            --m-color: #0ea5e9; /* Azul más moderno para hombre */
-            --f-color: #ec4899; /* Rosa más moderno para mujer */
+            --m-color: #0ea5e9;
+            --f-color: #ec4899;
+            --terrestre-bg: #fffbeb;
+            --acuatico-bg: #eff6ff;
         }
 
         body {
@@ -31,20 +33,19 @@
         h2 {
             text-align: center;
             color: #1e293b;
-            font-weight: 600;
-            letter-spacing: -0.5px;
+            margin-bottom: 25px;
         }
 
         .contenedor {
-            max-width: 1200px;
-            margin: 20px auto;
+            max-width: 1400px;
+            margin: auto;
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        /* Contenedor de tabla responsiva */
+        /* Corrección de alineación y scroll */
         .table-wrapper {
             overflow-x: auto;
             border-radius: 8px;
@@ -54,65 +55,61 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 800px; /* Evita que se amontone en móvil */
+            table-layout: auto; /* Permite que las columnas se ajusten al contenido */
+            min-width: 1200px;
         }
 
         th {
             background-color: var(--primary);
             color: white;
-            font-weight: 600;
-            text-transform: uppercase;
             font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            padding: 12px 15px;
+            text-transform: uppercase;
+            padding: 15px 10px;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
 
         td {
-            padding: 12px 15px;
+            padding: 12px 10px;
             border-bottom: 1px solid var(--border);
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             text-align: center;
+            vertical-align: middle;
         }
 
         tr:hover {
             background-color: #f1f5f9;
         }
 
-        /* Indicadores sutiles de sexo */
-        .hombre { border-left: 5px solid var(--m-color); }
-        .mujer { border-left: 5px solid var(--f-color); }
+        /* Indicadores laterales de sexo */
+        .fila-hombre { border-left: 6px solid var(--m-color); }
+        .fila-mujer { border-left: 6px solid var(--f-color); }
 
-        /* Estilo sutil para tipos de prueba */
-        .terrestre { color: #854d0e; font-weight: 500; background: #fefce8; }
-        .acuatico { color: #1e40af; font-weight: 500; background: #eff6ff; }
+        /* Colores de celdas por tipo de prueba */
+        .terrestre { background-color: var(--terrestre-bg); color: #854d0e; font-weight: 500; }
+        .acuatico { background-color: var(--acuatico-bg); color: #1e40af; font-weight: 500; }
 
         /* Botonera */
         .acciones {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
         }
 
         button {
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             border: none;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.3s;
             font-size: 14px;
         }
 
-        .btn-main {
-            background: var(--primary);
-            color: white;
-            grid-column: span 2; /* El de Excel ocupa todo el ancho */
-        }
-
-        .btn-main:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-main:hover { background: var(--primary-dark); }
 
         .btn-secundario { background: #e2e8f0; color: #475569; }
         .btn-secundario:hover { background: #cbd5e1; }
@@ -131,6 +128,7 @@
             <table>
                 <thead>
                     <tr>
+                        <!-- 13 Encabezados exactos para evitar el desfase -->
                         <th>Evaluador</th>
                         <th>Nombre</th>
                         <th>Tipo</th>
@@ -147,53 +145,65 @@
                     </tr>
                 </thead>
                 <tbody id="datos">
-                    <!-- Los datos se cargan aquí -->
+                    <!-- Los datos se inyectan aquí -->
                 </tbody>
             </table>
         </div>
 
         <div class="acciones">
-            <button class="btn-main" onclick="exportarExcel()">
-                📊 Descargar Reporte Excel
-            </button>
-            <button class="btn-secundario" onclick="window.location='menu.html'">
-                ⬅ Volver al Menú
-            </button>
-            <button class="btn-danger" onclick="cerrarSesion()">
-                Cerrar Sesión
-            </button>
+            <button class="btn-main" onclick="exportarExcel()">📊 Descargar Excel</button>
+            <button class="btn-secundario" onclick="window.location='menu.html'">⬅ Volver al Menú</button>
+            <button class="btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
     </div>
 
     <script>
         const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTNI0iBkoi9_GbbqS25R8bidVpUUMa8aR2mYB_gL0zMB4zscpmFcr6RhaIn7TkGBJqoPeteIKPm8GZB/pub?gid=0&single=true&output=csv";
 
-        window.onload = function(){
+        window.onload = function() {
             fetch(URL_CSV)
                 .then(res => res.text())
                 .then(csv => {
                     let filas = csv.split("\n").map(f => f.split(","));
-                    let tabla = "";
+                    let tablaHtml = "";
 
-                    if(!filas || filas.length <= 1){
-                        document.getElementById("datos").innerHTML = "<tr><td colspan='13'>Sin registros</td></tr>";
+                    if (!filas || filas.length <= 1) {
+                        document.getElementById("datos").innerHTML = "<tr><td colspan='13'>Sin registros encontrados</td></tr>";
                         return;
                     }
 
-                    for(let i=1; i<filas.length; i++){
+                    for (let i = 1; i < filas.length; i++) {
                         let fila = filas[i];
-                        if(!fila || fila.length < 6) continue;
+                        if (!fila || fila.length < 10) continue;
 
-                        let [evaluador, nombre, tipo, sexo, carrera, sentadillas, lagartijas, plancha, barras, apnea, nado, flotacion, fecha] = fila;
+                        // Asignación de variables por índice
+                        let evaluador   = fila[0] || "";
+                        let nombre      = fila[1] || "";
+                        let tipo        = fila[2] || "";
+                        let sexo        = (fila[3] || "").trim().toLowerCase();
+                        let carrera     = fila[4] || "";
+                        let sentadillas = fila[5] || "";
+                        let lagartijas  = fila[6] || "";
+                        let plancha     = fila[7] || "";
+                        let barras      = fila[8] || "";
+                        let apnea       = fila[9] || "";
+                        let nado        = fila[10] || "";
+                        let flotacion   = fila[11] || "";
+                        let fechaRaw    = fila[12] || "";
 
-                        let claseSexo = (sexo && sexo.toLowerCase() === "hombre") ? "hombre" : "mujer";
+                        // 1. Limpieza de Fecha (quita comillas y saltos de línea detectados en la imagen)
+                        let fechaLimpia = fechaRaw.replace(/[Entropy"']/g, '').replace(/\r?\n|\r/g, " ").trim();
 
-                        tabla += `
+                        // 2. Clase de fila según sexo
+                        let claseSexo = (sexo === "hombre") ? "fila-hombre" : "fila-mujer";
+
+                        // 3. Construcción de la fila con 13 celdas exactas
+                        tablaHtml += `
                         <tr class="${claseSexo}">
-                            <td><b>${evaluador}</b></td>
+                            <td style="font-weight:600">${evaluador}</td>
                             <td>${nombre}</td>
                             <td>${tipo}</td>
-                            <td>${sexo}</td>
+                            <td style="text-transform: capitalize;">${sexo}</td>
                             <td class="terrestre">${carrera}</td>
                             <td class="terrestre">${sentadillas}</td>
                             <td class="terrestre">${lagartijas}</td>
@@ -202,18 +212,27 @@
                             <td class="acuatico">${apnea}</td>
                             <td class="acuatico">${nado}</td>
                             <td class="acuatico">${flotacion}</td>
-                            <td style="font-size: 11px; color: #64748b">${fecha}</td>
+                            <td style="white-space: normal; font-size: 11px; color: #64748b;">${fechaLimpia}</td>
                         </tr>`;
                     }
-                    document.getElementById("datos").innerHTML = tabla;
+                    document.getElementById("datos").innerHTML = tablaHtml;
                 })
-                .catch(err => console.error("Error cargando datos:", err));
+                .catch(err => {
+                    console.error("Error:", err);
+                    document.getElementById("datos").innerHTML = "<tr><td colspan='13'>Error al cargar los datos</td></tr>";
+                });
         }
 
-        function exportarExcel(){
-            // Tu lógica de exportación se mantiene igual, es correcta.
-            alert("Iniciando descarga...");
-            // ... (resto del código de excel)
+        function exportarExcel() {
+            const table = document.querySelector("table");
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Resultados" });
+            XLSX.writeFile(wb, "Reporte_Evaluaciones.xlsx");
+        }
+
+        function cerrarSesion() {
+            if(confirm("¿Desea cerrar la sesión?")) {
+                window.location.href = "index.html"; 
+            }
         }
     </script>
 </body>
