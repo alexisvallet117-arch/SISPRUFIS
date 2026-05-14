@@ -2,187 +2,205 @@
 <html lang="es">
 
 <head>
+    <meta charset="UTF-8">
+    <title>Pruebas Terrestres - Registro</title>
 
-<meta charset="UTF-8">
-<title>Pruebas Terrestres</title>
+    <!-- Asumiendo que script.js contiene la función guardarEnNube y cerrarSesion -->
+    <script src="script.js"></script>
 
-<script src="script.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Fondo café suave con textura sutil o color sólido si no encuentra la imagen */
+            background-color: #4b3621; 
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("fondoter.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
 
-<style>
+        .contenedor {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.97);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-top: 8px solid #8b5a2b; /* Detalle café tierra superior */
+        }
 
-body{
-font-family:Arial;
-background-image:url("fondoter.png");
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
-}
+        h2 {
+            text-align: center;
+            color: #5d4037; /* Café oscuro */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
 
-.contenedor{
-width:420px;
-margin:auto;
-margin-top:40px;
-background:rgba(255,255,255,0.95);
-padding:25px;
-border-radius:10px;
-box-shadow:0 0 15px black;
-}
+        label {
+            font-weight: bold;
+            color: #4e342e;
+            display: block;
+            margin-top: 10px;
+        }
 
-h2{
-text-align:center;
-color:#2b6f8a;
-}
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            border: 1px solid #d7ccc8;
+            border-radius: 5px;
+            box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+        }
 
-label{
-font-weight:bold;
-}
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8b5a2b;
+            box-shadow: 0 0 5px rgba(139, 90, 43, 0.3);
+        }
 
-input,select{
-width:100%;
-padding:8px;
-margin:6px 0 15px 0;
-}
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            background: #8b5a2b; /* Café tierra */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
 
-button{
-width:100%;
-padding:12px;
-margin-top:5px;
-background:#2b6f8a;
-color:white;
-border:none;
-cursor:pointer;
-font-size:15px;
-}
+        button:hover {
+            background: #6f4821;
+        }
 
-button:hover{
-background:#1f4f63;
-}
+        .btn-secundario {
+            background: #a1887f; /* Café claro/grisáceo */
+            margin-top: 5px;
+        }
 
-.salir{
-background:#6c757d;
-}
+        .btn-secundario:hover {
+            background: #8d6e63;
+        }
 
-.salir:hover{
-background:#5a6268;
-}
+        .salir {
+            background: #5d4037;
+            margin-top: 20px;
+        }
 
-</style>
+        .salir:hover {
+            background: #3e2723;
+        }
+    </style>
 
-<script>
+    <script>
+        function guardarTerrestre() {
+            let evaluador = sessionStorage.getItem("evaluador") || "No definido";
 
-function guardarTerrestre(){
+            let nombre = document.getElementById("nombre").value;
+            let sexo = document.getElementById("sexo").value;
+            let edad = document.getElementById("edad").value;
 
-let evaluador = sessionStorage.getItem("evaluador");
+            if (nombre === "" || sexo === "" || edad === "") {
+                alert("Por favor completa los campos obligatorios (Nombre, Sexo y Edad)");
+                return;
+            }
 
-// 🔥 VALIDACIÓN IMPORTANTE
-let nombre = document.getElementById("nombre").value;
-let sexo = document.getElementById("sexo").value;
-let edad = document.getElementById("edad").value;
+            let datos = {
+                Tipo: "Terrestre",
+                Evaluador: evaluador,
+                Nombre: nombre,
+                Sexo: sexo,
+                Edad: edad,
+                "2400m": document.getElementById("carrera").value,
+                Sentadillas: document.getElementById("sentadillas").value,
+                Lagartijas: document.getElementById("lagartijas").value,
+                Plancha: document.getElementById("plancha").value,
+                Barras: document.getElementById("barras").value,
+                Apnea: "",
+                Nado: "",
+                Flotacion: "",
+                Fecha: new Date().toLocaleString()
+            };
 
-if(nombre === "" || sexo === "" || edad === ""){
-alert("Por favor completa los campos obligatorios");
-return;
-}
+            // GUARDADO LOCAL
+            let registros = JSON.parse(localStorage.getItem("resultados")) || [];
+            registros.push(datos);
+            localStorage.setItem("resultados", JSON.stringify(registros));
 
-let datos = {
+            // ENVÍO A LA NUBE (Requiere que la función exista en script.js)
+            if (typeof guardarEnNube === "function") {
+                guardarEnNube(datos);
+            }
 
-Tipo:"Terrestre",
-Evaluador:evaluador,
-Nombre:nombre,
-Sexo:sexo,
-Edad:edad,
-
-"2400m":document.getElementById("carrera").value,
-Sentadillas:document.getElementById("sentadillas").value,
-Lagartijas:document.getElementById("lagartijas").value,
-Plancha:document.getElementById("plancha").value,
-Barras:document.getElementById("barras").value,
-
-Apnea:"",
-Nado:"",
-Flotacion:"",
-
-Fecha:new Date().toLocaleString()
-
-};
-
-// 🔥 GUARDADO LOCAL (respaldo)
-let registros = JSON.parse(localStorage.getItem("resultados")) || [];
-registros.push(datos);
-localStorage.setItem("resultados", JSON.stringify(registros));
-
-// 🔥 GUARDAR EN GOOGLE SHEETS
-guardarEnNube(datos);
-
-alert("Resultados guardados correctamente");
-
-document.getElementById("form").reset();
-
-}
-
-</script>
-
+            alert("Resultados de Pruebas Terrestres guardados correctamente");
+            document.getElementById("form").reset();
+        }
+    </script>
 </head>
 
 <body>
 
-<div class="contenedor">
+    <div class="contenedor">
+        <h2>Pruebas Terrestres</h2>
 
-<h2>PRUEBAS TERRESTRES</h2>
+        <form id="form">
+            <label>Nombre del Evaluado</label>
+            <input type="text" id="nombre" placeholder="Nombre completo" required>
 
-<form id="form">
+            <label>Sexo</label>
+            <select id="sexo" required>
+                <option value="">Seleccionar</option>
+                <option value="Hombre">Hombre</option>
+                <option value="Mujer">Mujer</option>
+            </select>
 
-<label>Nombre evaluado</label>
-<input type="text" id="nombre" required>
+            <label>Rango de Edad</label>
+            <select id="edad" required>
+                <option value="">Seleccionar</option>
+                <option value="18-29">18-29 años</option>
+                <option value="30-39">30-39 años</option>
+                <option value="40-49">40-49 años</option>
+            </select>
 
-<label>Sexo</label>
-<select id="sexo" required>
-<option value="">Seleccionar</option>
-<option value="Hombre">Hombre</option>
-<option value="Mujer">Mujer</option>
-</select>
+            <hr style="border: 0.5px solid #d7ccc8; margin: 20px 0;">
 
-<label>Rango de edad</label>
-<select id="edad" required>
-<option value="">Seleccionar</option>
-<option value="18-29">18-29 años</option>
-<option value="30-39">30-39 años</option>
-<option value="40-49">40-49 años</option>
-</select>
+            <label>Carrera 2400 m (min:seg)</label>
+            <input type="text" id="carrera" placeholder="Ej: 10:30">
 
-<label>Carrera 2400 m (min:seg)</label>
-<input type="text" id="carrera" placeholder="10:30">
+            <label>Sentadillas (reps)</label>
+            <input type="number" id="sentadillas" placeholder="Cantidad">
 
-<label>Sentadillas (reps)</label>
-<input type="number" id="sentadillas">
+            <label>Lagartijas (reps)</label>
+            <input type="number" id="lagartijas" placeholder="Cantidad">
 
-<label>Lagartijas (reps)</label>
-<input type="number" id="lagartijas">
+            <label>Plancha (min:seg)</label>
+            <input type="text" id="plancha" placeholder="Ej: 03:00">
 
-<label>Plancha (min:seg)</label>
-<input type="text" id="plancha" placeholder="03:00">
+            <label>Barras (reps)</label>
+            <input type="number" id="barras" placeholder="Cantidad">
+        </form>
 
-<label>Barras (reps)</label>
-<input type="number" id="barras">
+        <button onclick="guardarTerrestre()">
+            GUARDAR RESULTADOS
+        </button>
 
-</form>
+        <button class="btn-secundario" onclick="window.location='menu.html'">
+            Regresar al Menú
+        </button>
 
-<button onclick="guardarTerrestre()">
-Guardar resultados
-</button>
-
-<br>
-
-<button onclick="window.location='menu.html'">
-Regresar al menú
-</button>
-
-<button class="salir" onclick="cerrarSesion()">
-Cerrar sesión
-</button>
-
-</div>
+        <button class="salir" onclick="cerrarSesion()">
+            Cerrar Sesión
+        </button>
+    </div>
 
 </body>
-
 </html>
