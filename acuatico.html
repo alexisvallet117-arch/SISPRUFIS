@@ -2,184 +2,183 @@
 <html lang="es">
 
 <head>
+    <meta charset="UTF-8">
+    <title>Pruebas Acuáticas - Estética Refrescante</title>
 
-<meta charset="UTF-8">
+    <script src="script.js"></script>
 
-<title>Pruebas Acuáticas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Fondo con degradado en tonos azul y aqua */
+            background-color: #008b8b; 
+            background-image: linear-gradient(135deg, rgba(0, 48, 73, 0.8), rgba(0, 168, 150, 0.8)), url("fondonat.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-<script src="script.js"></script>
+        .contenedor {
+            width: 420px;
+            background: rgba(255, 255, 255, 0.95); /* Blanco cristalino */
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-top: 10px solid #00ced1; /* Línea superior en Verde Aqua (DarkTurquoise) */
+        }
 
-<style>
+        h2 {
+            text-align: center;
+            color: #005f73; /* Azul oceánico oscuro */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0;
+            border-bottom: 2px solid #e0f7fa;
+            padding-bottom: 12px;
+        }
 
-body{
+        label {
+            font-weight: bold;
+            color: #005f73;
+            display: block;
+            margin-top: 15px;
+        }
 
-font-family:Arial;
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 15px 0;
+            border: 1.5px solid #b2ebf2; /* Azul muy claro */
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #f0fdfd;
+        }
 
-/* fondo */
-background-image:url("fondonat.png");
+        input:focus {
+            outline: none;
+            border-color: #00ced1;
+            box-shadow: 0 0 8px rgba(0, 206, 209, 0.4);
+            background-color: #ffffff;
+        }
 
-background-size:cover;
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            background: #00a896; /* Verde Aqua vibrante */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
 
-background-position:center;
+        button:hover {
+            background: #028090; /* Azul verdoso más profundo */
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 168, 150, 0.3);
+        }
 
-background-attachment:fixed;
+        .btn-secundario {
+            background: #0077b6; /* Azul deportivo */
+        }
 
-}
+        .btn-secundario:hover {
+            background: #0096c7;
+        }
 
-.contenedor{
+        .salir {
+            background: #5271ff; /* Azul vibrante para cerrar sesión */
+            margin-top: 20px;
+        }
 
-width:420px;
-margin:auto;
-margin-top:40px;
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 0 10px gray;
+        .salir:hover {
+            background: #3f51b5;
+        }
 
-}
+        /* Estilo para los placeholders */
+        ::placeholder {
+            color: #a0ced9;
+        }
+    </style>
 
-h2{
+    <script>
+        function guardarAcuatico() {
+            let evaluador = sessionStorage.getItem("evaluador");
 
-text-align:center;
-color:#2b6f8a;
+            let datos = {
+                Tipo: "Acuatico",
+                Evaluador: evaluador,
+                Nombre: document.getElementById("nombre").value,
+                "2400m": "",
+                Sentadillas: "",
+                Lagartijas: "",
+                Plancha: "",
+                Barras: "",
+                Apnea: document.getElementById("apnea").value,
+                Nado: document.getElementById("nado").value,
+                Flotacion: document.getElementById("flotacion").value,
+                Fecha: new Date().toLocaleString()
+            };
 
-}
+            if (datos.Nombre === "") {
+                alert("Por favor ingrese el nombre del evaluado");
+                return;
+            }
 
-label{
+            let registros = JSON.parse(localStorage.getItem("resultados")) || [];
+            registros.push(datos);
+            localStorage.setItem("resultados", JSON.stringify(registros));
 
-font-weight:bold;
+            if (typeof guardarEnNube === "function") {
+                guardarEnNube(datos);
+            }
 
-}
-
-input{
-
-width:100%;
-padding:8px;
-margin:6px 0 15px 0;
-
-}
-
-button{
-
-width:100%;
-padding:12px;
-margin-top:5px;
-background:#2b6f8a;
-color:white;
-border:none;
-cursor:pointer;
-font-size:15px;
-
-}
-
-button:hover{
-
-background:#1f4f63;
-
-}
-
-.salir{
-
-background:#6c757d;
-
-}
-
-.salir:hover{
-
-background:#5a6268;
-
-}
-
-</style>
-
-<script>
-
-function guardarAcuatico(){
-
-let evaluador=sessionStorage.getItem("evaluador");
-
-let datos={
-
-Tipo:"Acuatico",
-
-Evaluador:evaluador,
-
-Nombre:document.getElementById("nombre").value,
-
-"2400m":"",
-
-Sentadillas:"",
-
-Lagartijas:"",
-
-Plancha:"",
-
-Barras:"",
-
-Apnea:document.getElementById("apnea").value,
-
-Nado:document.getElementById("nado").value,
-
-Flotacion:document.getElementById("flotacion").value,
-
-Fecha:new Date().toLocaleString()
-
-};
-
-// 🔥 GUARDADO CORRECTO
-let registros = JSON.parse(localStorage.getItem("resultados")) || [];
-
-registros.push(datos);
-
-localStorage.setItem("resultados", JSON.stringify(registros));
-guardarEnNube(datos);
-alert("Resultados guardados correctamente");
-
-document.getElementById("form").reset();
-
-}
-
-</script>
-
+            alert("🌊 Resultados acuáticos guardados correctamente");
+            document.getElementById("form").reset();
+        }
+    </script>
 </head>
 
 <body>
 
-<div class="contenedor">
+    <div class="contenedor">
+        <h2>Pruebas Acuáticas</h2>
 
-<h2>PRUEBAS ACUÁTICAS</h2>
+        <form id="form">
+            <label>Nombre del evaluado</label>
+            <input type="text" id="nombre" placeholder="Nombre completo" required>
 
-<form id="form">
+            <label>Apnea 30 m</label>
+            <input type="text" id="apnea" placeholder="Ej: 30 seg o Logrado">
 
-<label>Nombre del evaluado</label>
-<input type="text" id="nombre" required>
+            <label>Nado 200 m (min:seg)</label>
+            <input type="text" id="nado" placeholder="Ej: 03:30">
 
-<label>Apnea 30 m </label>
-<input type="text" id="apnea" placeholder="30">
+            <label>Flotación 10 min (min:seg)</label>
+            <input type="text" id="flotacion" placeholder="Ej: 10:00">
+        </form>
 
-<label>Nado 200 m (min:seg)</label>
-<input type="text" id="nado" placeholder="03:30">
+        <button onclick="guardarAcuatico()">
+            Guardar resultados
+        </button>
 
-<label>Flotación 10 min (min:seg)</label>
-<input type="text" id="flotacion" placeholder="10:00">
+        <button class="btn-secundario" onclick="window.location='menu.html'">
+            Regresar al menú
+        </button>
 
-</form>
-
-<button onclick="guardarAcuatico()">
-Guardar resultados
-</button>
-
-<br>
-
-<button onclick="window.location='menu.html'">
-Regresar al menú
-</button>
-
-<button class="salir" onclick="cerrarSesion()">
-Cerrar sesión
-</button>
-
-</div>
+        <button class="salir" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+    </div>
 
 </body>
 
