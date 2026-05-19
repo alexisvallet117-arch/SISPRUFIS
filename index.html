@@ -10,12 +10,11 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            /* Fondo militar (usamos una imagen de stock similar por seguridad) */
-            background-image:url("fondoindex.png");
+            background-image: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.8)), url("fondoindex.png");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -26,147 +25,178 @@
             padding: 20px;
         }
 
-        /* Contenedor principal de la tarjeta de login (Azul Verdoso) */
+        /* Contenedor principal estilo "Glassmorphism" institucional */
         .tarjeta-login {
             width: 100%;
-            max-width: 420px;
-            background-color: rgba(0, 34, 79, 1); /* Azul marino */
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            border: 1px solid #14465d;
+            max-width: 400px;
+            background-color: rgba(20, 32, 48, 0.85); /* Azul/Gris oscuro con transparencia */
+            backdrop-filter: blur(10px); /* Desenfoque de fondo moderno */
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Cabecera con texto amarillo */
+        /* Cabecera */
         .cabecera {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .cabecera h2 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: #f6e05e; /* Texto amarillo */
+            color: #ffffff;
             text-transform: uppercase;
+            letter-spacing: 1.5px;
+            line-height: 1.4;
+        }
+        
+        .cabecera p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 5px;
             letter-spacing: 0.5px;
-            line-height: 1.3;
         }
 
-        /* Cuerpo del formulario */
+        /* Cuerpo del formulario y corrección de contenedor */
         .cuerpo-formulario {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .grupo-input {
             display: flex;
             flex-direction: column;
+            gap: 6px;
         }
 
-        /* Etiquetas limpias en blanco/gris suave */
+        /* Etiquetas */
         label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #e2e8f0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94a3b8;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            letter-spacing: 1px;
         }
 
-        /* Inputs estilizados */
+        /* Inputs modernos e institucionales */
         input {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             font-size: 0.95rem;
-            color: #1a202c;
-            background-color: #f1f5f9;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 6px;
+            color: #ffffff;
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
             outline: none;
+            transition: all 0.2s ease;
         }
 
         input:focus {
-            border-color: #f6e05e; /* Foco amarillo */
+            border-color: #4ade80; /* Verde éxito/militar al enfocar */
+            background-color: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15);
         }
 
-        /* Botón "ENTRAR" principal (Verde Suave) */
+        input::placeholder {
+            color: #64748b;
+        }
+
+        /* Botón Principal (Verde Táctico / Éxito) */
         .btn-entrar {
             width: 100%;
-            padding: 12px;
-            background-color: #d4d4d4; /* plateado muy suave */
-            color: #1a202c;
+            padding: 14px;
+            background-color: #16a34a; /* Verde militar/institucional sólido */
+            color: #ffffff;
             border: none;
             border-radius: 8px;
             font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
             text-transform: uppercase;
+            letter-spacing: 1px;
             margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
         }
 
         .btn-entrar:hover {
-            background-color: #b9cfac;
+            background-color: #15803d;
+            transform: translateY(-1px);
+        }
+        
+        .btn-entrar:active {
+            transform: translateY(0);
         }
 
-        /* Separador visual opcional */
+        /* Separador visual elegante */
         .separador {
             text-align: center;
-            margin: 20px 0;
-            color: #cbd5e1;
+            margin: 25px 0;
+            color: #64748b;
             font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             position: relative;
         }
+        
         .separador::before, .separador::after {
             content: "";
             position: absolute;
             top: 50%;
-            width: 40%;
+            width: 35%;
             height: 1px;
-            background-color: rgba(203, 213, 225, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
         }
         .separador::before { left: 0; }
         .separador::after { right: 0; }
 
-        /* Botón de acceso directo (Banner Amarillo) */
+        /* Botón de acceso directo secundario (Limpio y no competitivo) */
         .btn-acceso-directo {
             width: 100%;
-            padding: 18px;
-            background-color: #ecc94b; /* Amarillo vibrante */
-            color: #1a202c;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
+            padding: 12px;
+            background-color: transparent;
+            color: #f59e0b; /* Ámbar/Amarillo técnico suave */
+            border: 1.5px solid rgba(245, 158, 11, 0.4);
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s ease;
-            box-shadow: 0 4px 10px rgba(236, 201, 75, 0.4);
+            transition: all 0.2s ease;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-acceso-directo:hover {
-            background-color: #dbb33b;
+            background-color: rgba(245, 158, 11, 0.08);
+            border-color: #f59e0b;
         }
     </style>
 
     <script>
-        // --- TU ESTRUCTURA DE USUARIOS ORIGINAL SE MANTIENE INTACTA ---
+        // Tu lógica de JS exacta se mantiene intacta
         const usuarios = [
             {usuario:"admin", pass:"SeguridadAM"},
             {usuario:"Kraneo", pass:"FES123*"},
             {usuario:"Tenoch", pass:"FES321*"}
-            // Aquí puedes seguir agregando tus usuarios
         ];
 
         function validarLogin(event) {
-            // Evita que la página se recargue automáticamente
             event.preventDefault(); 
 
             const usuarioIngresado = document.getElementById("usuario").value.trim();
             const passIngresado = document.getElementById("pass").value;
             let acceso = false;
 
-            // --- TU LÓGICA DE VALIDACIÓN SE MANTIENE INTACTA ---
             for (let i = 0; i < usuarios.length; i++) {
                 if (
                     usuarios[i].usuario === usuarioIngresado &&
@@ -178,20 +208,14 @@
             }
 
             if (acceso) {
-                // Guarda la sesión del evaluador actual (TU LÓGICA ORIGINAL)
                 sessionStorage.setItem("evaluador", usuarioIngresado);
-                
-                // Redirige a la página de menú (TU LÓGICA ORIGINAL)
-                // Nota: Asegúrate de tener "menu.html" o cambia la ruta aquí si es necesario
                 window.location.href = "menu.html";
             } else {
                 alert("Usuario o contraseña incorrectos. Por favor, intente de nuevo.");
             }
         }
 
-        // --- NUEVA FUNCIÓN PARA EL ACCESO DIRECTO ---
         function accesoDirectoCalculadora() {
-            // Redirige directamente a la calculadora sin validar
             window.location.href = "calculadora.html";
         }
     </script>
@@ -200,14 +224,15 @@
 
 <div class="tarjeta-login">
     <div class="cabecera">
-        <h2>CONTROL DE ACCESO<br>SISTEMA DE PRUEBAS FÍSICAS</h2>
+        <h2>Control de Acceso</h2>
+        <p>Sistema de Pruebas Físicas</p>
     </div>
 
     <div class="cuerpo-formulario">
         <form onsubmit="validarLogin(event)">
             <div class="grupo-input">
                 <label for="usuario">Evaluador</label>
-                <input type="text" id="usuario" placeholder="Ej. admin" required autocomplete="username">
+                <input type="text" id="usuario" placeholder="Ingrese su usuario" required autocomplete="username">
             </div>
 
             <div class="grupo-input">
@@ -216,14 +241,14 @@
             </div>
 
             <button type="submit" class="btn-entrar">
-                ENTRAR
+                Entrar al Sistema
             </button>
         </form>
 
-        <div class="separador">ó</div>
+        <div class="separador">O</div>
 
         <button onclick="accesoDirectoCalculadora()" class="btn-acceso-directo">
-            Calculadora de puntaje
+            Calculadora de Puntaje
         </button>
     </div>
 </div>
