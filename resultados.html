@@ -174,6 +174,8 @@
 
         .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
         .btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
+        
+        .btn-debug { background: #5b21b6; color: #f5f3ff; margin-top: 15px; width: 100%; }
     </style>
 </head>
 <body>
@@ -214,7 +216,7 @@
                     </tr>
                 </thead>
                 <tbody id="datos">
-                    <tr><td colspan="14">Cargando registros desde la base de datos...</td></tr>
+                    <tr><td colspan="14">Conectando con la base de datos en línea...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -224,12 +226,15 @@
             <button class="btn-secundario" onclick="window.location='menu.html'">⬅ Volver al Menú</button>
             <button class="btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
+        
+        <button class="btn-debug" onclick="ejecutarDiagnostico()">⚙️ Ejecutar Diagnóstico de Datos</button>
     </div>
 
     <script>
         const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTNI0iBkoi9_GbbqS25R8bidVpUUMa8aR2mYB_gL0zMB4zscpmFcr6RhaIn7TkGBJqoPeteIKPm8GZB/pub?gid=0&single=true&output=csv";
+        
+        let textoCsvCrudo = ""; // Almacenará la respuesta para diagnóstico rápido
 
-        // Valores máximos requeridos para obtener el 100% de eficiencia
         const RANGOS_MAXIMOS = {
             sentadillas: 60,
             lagartijas: 50,
@@ -244,11 +249,11 @@
             let puntosSumados = 0;
             let metricasEvaluadas = 0;
 
-            if (carrera && carrera.trim() !== "" && carrera !== "0" && carrera !== "-") {
-                let partes = carrera.split(":");
+            if (carrera && carrera.toString().trim() !== "" && carrera !== "0" && carrera !== "-") {
+                let partes = carrera.toString().split(":");
                 let segundosTotales = 0;
                 if(partes.length === 2) {
-                    segundosTotales = (parseInt(partes[0]) * 60) + parseInt(partes[1]);
+                    segundosTotales = (parseInt(partes[0], 10) * 60) + parseInt(partes[1], 10);
                 } else {
                     segundosTotales = parseFloat(carrera) * 60;
                 }
@@ -261,8 +266,9 @@
             }
 
             const evaluarMetricaDirecta = (valor, maximo) => {
-                if (valor && !isNaN(valor) && parseFloat(valor) > 0) {
-                    let pct = (parseFloat(valor) / maximo) * 100;
+                let num = parseFloat(valor);
+                if (valor && !isNaN(num) && num > 0) {
+                    let pct = (num / maximo) * 100;
                     puntosSumados += Math.max(0, Math.min(100, pct));
                     metricasEvaluadas++;
                 }
@@ -282,44 +288,70 @@
 
         window.onload = function() {
             fetch(URL_CSV)
-                .then(res => res.text())
+                .then(res => {
+                    if(!res.ok) throw new Error("HTTP status " + res.status);
+                    return res.text();
+                })
                 .then(csv => {
-                    // Limpieza básica de saltos de línea molestos
-                    let lineas = csv.split(/\r?\n/);
+                    textoCsvCrudo = csv;
+                    let lineas = csv.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+                    
+                    if (lineas.length <= 1) {
+                        document.getElementById("datos").innerHTML = "<tr><td colspan='14'>El archivo de la base de datos se encuentra vacío.</td></tr>";
+                        return;
+                    }
+
+                    // Determinar dinámicamente si usa coma o punto y coma
+                    let separador = lineas[0].includes(";") ? ";" : ",";
+                    
+                    // Obtener nombres de las columnas en minúsculas para mapeo inteligente
+                    let encabezadosExcel = lineas[0].split(separador).map(h => h.replace(/^"|"$/g, '').trim().toLowerCase());
+
+                    // Mapear los índices reales basados en el nombre de la columna en tu Excel en línea
+                    let idx = {
+                        evaluador: encabezadosExcel.findIndex(h => h.includes("evaluador")),
+                        nombre: encabezadosExcel.findIndex(h => h.includes("nombre")),
+                        tipo: encabezadosExcel.findIndex(h => h.includes("tipo")),
+                        sexo: encabezadosExcel.findIndex(h => h.includes("sexo")),
+                        carrera: encabezadosExcel.findIndex(h => h.includes("2400m") || h.includes("carrera")),
+                        sentadillas: encabezadosExcel.findIndex(h => h.includes("sentadillas")),
+                        lagartijas: encabezadosExcel.findIndex(h => h.includes("lagartijas")),
+                        plancha: encabezadosExcel.findIndex(h => h.includes("plancha")),
+                        barras: encabezadosExcel.findIndex(h => h.includes("barras")),
+                        apnea: encabezadosExcel.findIndex(h => h.includes("apnea")),
+                        nado: encabezadosExcel.findIndex(h => h.includes("nado")),
+                        flotacion: encabezadosExcel.findIndex(h => h.includes("flotacion")),
+                        fecha: encabezadosExcel.findIndex(h => h.includes("fecha"))
+                    };
+
+                    // Si falló la búsqueda inteligente por nombres, recurrir a los índices por posición fija antiguos
+                    if(idx.evaluador === -1) {
+                        idx = { evaluador: 0, nombre: 1, tipo: 2, sexo: 3, carrera: 4, sentadillas: 5, lagartijas: 6, plancha: 7, barras: 8, apnea: 9, nado: 10, flotacion: 11, fecha: 12 };
+                    }
+
                     let tablaHtml = "";
                     let sumaPuntajesGlobales = 0;
                     let contadorRegistrosValidos = 0;
 
-                    if (!lineas || lineas.length <= 1) {
-                        document.getElementById("datos").innerHTML = "<tr><td colspan='14'>Sin registros encontrados en la base de datos</td></tr>";
-                        return;
-                    }
-
-                    // Detectar si el CSV usa comas o puntos y comas (por compatibilidad regional de Excel)
-                    let separador = lineas[0].includes(";") ? ";" : ",";
-
                     for (let i = 1; i < lineas.length; i++) {
-                        let linea = lineas[i].trim();
-                        if (!linea) continue;
-
-                        // Separación limpia eliminando las comillas que añade Google Sheets automáticamente
-                        let fila = linea.split(separador).map(celda => celda.replace(/^"|"$/g, '').trim());
+                        let fila = lineas[i].split(separador).map(celda => celda.replace(/^"|"$/g, '').trim());
                         
-                        if (fila.length < 10) continue;
+                        // Validar que la fila tenga contenido mínimo
+                        if (fila.length < 3) continue;
 
-                        let evaluador   = fila[0] || "-";
-                        let nombre      = fila[1] || "-";
-                        let tipo        = fila[2] || "-";
-                        let sexo        = (fila[3] || "").trim().toLowerCase();
-                        let carrera     = fila[4] || "-";
-                        let sentadillas = fila[5] || "-";
-                        let lagartijas  = fila[6] || "-";
-                        let plancha     = fila[7] || "-";
-                        let barras      = fila[8] || "-";
-                        let apnea       = fila[9] || "-";
-                        let nado        = fila[10] || "-";
-                        let flotacion   = fila[11] || "-";
-                        let sampleFecha = fila[12] || "-";
+                        let evaluador   = fila[idx.evaluador] || "-";
+                        let nombre      = fila[idx.nombre] || "-";
+                        let tipo        = fila[idx.tipo] || "-";
+                        let sexo        = (fila[idx.sexo] || "").toLowerCase();
+                        let carrera     = fila[idx.carrera] || "-";
+                        let sentadillas = fila[idx.sentadillas] || "-";
+                        let lagartijas  = fila[idx.lagartijas] || "-";
+                        let plancha     = fila[idx.plancha] || "-";
+                        let barras      = fila[idx.barras] || "-";
+                        let apnea       = fila[idx.apnea] || "-";
+                        let nado        = fila[idx.nado] || "-";
+                        let flotacion   = fila[idx.flotacion] || "-";
+                        let sampleFecha = fila[idx.fecha] || "-";
 
                         let resultadoEficiencia = calcularPuntajeFila(carrera, sentadillas, lagartijas, plancha, barras, apnea, nado, flotacion);
                         
@@ -328,14 +360,14 @@
                             contadorRegistrosValidos++;
                         }
 
-                        let claseSexo = (sexo === "hombre") ? "fila-hombre" : "fila-mujer";
+                        let claseSexo = (sexo.includes("hombre") || sexo === "m" || sexo === "h") ? "fila-hombre" : "fila-mujer";
 
                         tablaHtml += `
                         <tr class="${claseSexo}">
                             <td style="font-weight:600; color: #ffffff;">${evaluador}</td>
                             <td style="text-align: left; font-weight:500;">${nombre}</td>
                             <td>${tipo}</td>
-                            <td style="text-transform: capitalize; font-weight: 500;">${sexo || "No def."}</td>
+                            <td style="text-transform: capitalize; font-weight: 500;">${sexo || "-"}</td>
                             <td class="terrestre">${carrera}</td>
                             <td class="terrestre">${sentadillas}</td>
                             <td class="terrestre">${lagartijas}</td>
@@ -349,29 +381,53 @@
                         </tr>`;
                     }
                     
-                    if(contadorRegistrosValidos === 0 && tablaHtml === "") {
-                        document.getElementById("datos").innerHTML = "<tr><td colspan='14'>Los datos están vacíos o no se pudieron procesar correctamente.</td></tr>";
+                    if(tablaHtml === "") {
+                        document.getElementById("datos").innerHTML = "<tr><td colspan='14'>Estructura procesada sin datos visibles. Verifique el orden en Excel.</td></tr>";
                         return;
                     }
 
                     document.getElementById("datos").innerHTML = tablaHtml;
 
-                    // Actualizar las tarjetas de estadísticas
+                    // Actualizar marcadores numéricos superiores
                     document.getElementById("stat-total").innerText = contadorRegistrosValidos;
                     if(contadorRegistrosValidos > 0) {
                         let promFinal = (sumaPuntajesGlobales / contadorRegistrosValidos).toFixed(1);
                         document.getElementById("stat-promedio").innerText = promFinal + "%";
-                    } else {
-                        document.getElementById("stat-promedio").innerText = "0.0%";
                     }
 
                 })
                 .catch(err => {
-                    console.error("Error crítico de lectura:", err);
-                    document.getElementById("datos").innerHTML = "<tr><td colspan='14' style='color:#f87171;'>Fallo de conexión remota con el repositorio de datos o enlace desactualizado.</td></tr>";
+                    console.error("Error crítico:", err);
+                    document.getElementById("datos").innerHTML = `<tr><td colspan='14' style='color:#f87171;'>Fallo de enlace remoto: ${err.message}. Asegúrese de volver a Publicar en la Web en formato CSV.</td></tr>`;
                 });
+        }
+
+        function ejecutarDiagnostico() {
+            if(!textoCsvCrudo) {
+                alert("🔴 Diagnóstico: El sistema no ha recibido ninguna respuesta de Google Sheets. Tu enlace está roto, privado, o bloqueado por políticas de red (CORS).");
+                return;
+            }
+            let lineas = textoCsvCrudo.split("\n");
+            let msg = `✨ DIAGNÓSTICO DEL SISTEMA TÁCTICO ✨\n\n`;
+            msg += `• Total Líneas detectadas: ${lineas.length}\n`;
+            msg += `• Separador asumido: ${textoCsvCrudo.includes(";") ? "Punto y coma (;)" : "Coma (,)"}\n\n`;
+            msg += `• Encabezado real leído:\n"${lineas[0]}"\n\n`;
+            msg += `• Ejemplo Fila 1:\n"${lineas[1] || 'No existe fila 1'}"\n\n`;
+            msg += `Si el encabezado o la fila se ven vacíos, re-publica tu hoja de cálculo desde Google Drive.`;
+            alert(msg);
         }
 
         function exportarExcel() {
             const table = document.querySelector("table");
-            const wb = XLSX.utils.table_to_book(table,
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Resultados Finales" });
+            XLSX.writeFile(wb, "Reporte_Eficiencia_Pruebas_Fisicas.xlsx");
+        }
+
+        function cerrarSesion() {
+            if(confirm("¿Desea cerrar la sesión del sistema?")) {
+                window.location.href = "index.html"; 
+            }
+        }
+    </script>
+</body>
+</html>
