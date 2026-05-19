@@ -3,23 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados de Evaluaciones</title>
+    <title>Resultados de Evaluaciones - Sistema Táctico</title>
     
-    <!-- Librerías Externas -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #2b6f8a;
-            --primary-dark: #1f4f63;
-            --bg: #f8fafc;
-            --text: #334155;
-            --border: #e2e8f0;
-            --m-color: #0ea5e9;
-            --f-color: #ec4899;
-            --terrestre-bg: #fffbeb;
-            --acuatico-bg: #eff6ff;
+            --primary: #1e293b;
+            --primary-light: #334155;
+            --accent: #16a34a;
+            --accent-dark: #15803d;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --m-color: #38bdf8;
+            --f-color: #f472b6;
+            --terrestre-bg: rgba(245, 158, 11, 0.1);
+            --terrestre-txt: #fbbf24;
+            --acuatico-bg: rgba(14, 165, 233, 0.1);
+            --acuatico-txt: #38bdf8;
         }
 
         body {
@@ -27,70 +32,127 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 30px 20px;
         }
 
         h2 {
             text-align: center;
-            color: #1e293b;
-            margin-bottom: 25px;
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        /* Tarjetas de Resumen Estadístico */
+        .resumen-global {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto 25px auto;
+        }
+
+        .tarjeta-stat {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .tarjeta-stat p {
+            margin: 0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .tarjeta-stat .valor {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 5px;
+            color: #ffffff;
         }
 
         .contenedor {
             max-width: 1400px;
             margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(8px);
         }
 
-        /* Corrección de alineación y scroll */
         .table-wrapper {
             overflow-x: auto;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid var(--border);
+            background: #111827;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: auto; /* Permite que las columnas se ajusten al contenido */
-            min-width: 1200px;
+            table-layout: auto;
+            min-width: 1300px;
         }
 
         th {
-            background-color: var(--primary);
-            color: white;
-            font-size: 0.75rem;
+            background-color: #1f2937;
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 700;
             text-transform: uppercase;
-            padding: 15px 10px;
+            letter-spacing: 1px;
+            padding: 16px 12px;
             position: sticky;
             top: 0;
             z-index: 10;
+            border-bottom: 2px solid var(--border);
         }
 
         td {
-            padding: 12px 10px;
+            padding: 14px 12px;
             border-bottom: 1px solid var(--border);
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             text-align: center;
             vertical-align: middle;
+            color: #e5e7eb;
         }
 
         tr:hover {
-            background-color: #f1f5f9;
+            background-color: rgba(55, 65, 81, 0.5);
         }
 
-        /* Indicadores laterales de sexo */
-        .fila-hombre { border-left: 6px solid var(--m-color); }
-        .fila-mujer { border-left: 6px solid var(--f-color); }
+        /* Indicadores laterales basados en género */
+        .fila-hombre { border-left: 5px solid var(--m-color); }
+        .fila-mujer { border-left: 5px solid var(--f-color); }
 
-        /* Colores de celdas por tipo de prueba */
-        .terrestre { background-color: var(--terrestre-bg); color: #854d0e; font-weight: 500; }
-        .acuatico { background-color: var(--acuatico-bg); color: #1e40af; font-weight: 500; }
+        /* Categorías de pruebas con legibilidad mejorada */
+        .terrestre { background-color: var(--terrestre-bg); color: var(--terrestre-txt); font-weight: 600; }
+        .acuatico { background-color: var(--acuatico-bg); color: var(--acuatico-txt); font-weight: 600; }
+        
+        /* Celda de puntaje final destacado */
+        .puntaje-final {
+            font-weight: 700;
+            font-size: 0.95rem;
+            background-color: rgba(22, 163, 74, 0.15);
+            color: #4ade80;
+            border-radius: 4px;
+        }
 
-        /* Botonera */
+        /* Panel de acciones */
         .acciones {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -99,39 +161,53 @@
         }
 
         button {
-            padding: 12px;
+            padding: 14px;
             border-radius: 8px;
             border: none;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s ease;
             font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn-main { background: var(--primary); color: white; }
-        .btn-main:hover { background: var(--primary-dark); }
+        .btn-main { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2); }
+        .btn-main:hover { background: var(--accent-dark); transform: translateY(-1px); }
 
-        .btn-secundario { background: #e2e8f0; color: #475569; }
-        .btn-secundario:hover { background: #cbd5e1; }
+        .btn-secundario { background: #374151; color: #f3f4f6; border: 1px solid rgba(255,255,255,0.05); }
+        .btn-secundario:hover { background: #4b5563; }
 
-        .btn-danger { background: #fee2e2; color: #b91c1c; }
-        .btn-danger:hover { background: #fecaca; }
+        .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
 
     </style>
 </head>
 <body>
 
     <h2>Resultados de Evaluaciones</h2>
+    <div class="subtitulo">Módulo de Rendimiento y Rendición de Cuentas Físicas</div>
+
+    <div class="resumen-global">
+        <div class="tarjeta-stat">
+            <p>Total Evaluados</p>
+            <div class="valor" id="stat-total">0</div>
+        </div>
+        <div class="tarjeta-stat">
+            <p>Promedio Eficiencia General</p>
+            <div class="valor" id="stat-promedio" style="color: #4ade80;">0.0%</div>
+        </div>
+    </div>
 
     <div class="contenedor">
         <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <!-- 13 Encabezados exactos para evitar el desfase -->
                         <th>Evaluador</th>
                         <th>Nombre</th>
                         <th>Tipo</th>
+                        <th>Sexo</th>
                         <th>2400m</th>
                         <th>Sentadillas</th>
                         <th>Lagartijas</th>
@@ -140,17 +216,18 @@
                         <th>Apnea</th>
                         <th>Nado</th>
                         <th>Flotación</th>
+                        <th>Puntaje Eficiencia</th>
                         <th>Fecha</th>
                     </tr>
                 </thead>
                 <tbody id="datos">
-                    <!-- Los datos se inyectan aquí -->
+                    <tr><td colspan="14">Cargando registros desde la base de datos...</td></tr>
                 </tbody>
             </table>
         </div>
 
         <div class="acciones">
-            <button class="btn-main" onclick="exportarExcel()">📊 Descargar Excel</button>
+            <button class="btn-main" onclick="exportarExcel()">📊 Descargar Reporte Excel</button>
             <button class="btn-secundario" onclick="window.location='menu.html'">⬅ Volver al Menú</button>
             <button class="btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
@@ -159,77 +236,157 @@
     <script>
         const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTNI0iBkoi9_GbbqS25R8bidVpUUMa8aR2mYB_gL0zMB4zscpmFcr6RhaIn7TkGBJqoPeteIKPm8GZB/pub?gid=0&single=true&output=csv";
 
+        // --- MOTOR DE CÁLCULO DE PUNTAJES AUTOMÁTICOS ---
+        // Configuración de los valores máximos requeridos para obtener el 100% de eficiencia por métrica
+        const RANGOS_MAXIMOS = {
+            sentadillas: 60,
+            lagartijas: 50,
+            plancha: 180, // en segundos
+            barras: 15,
+            apnea: 60,    // en segundos
+            nado: 100,    // metros base recorrido estándar
+            flotacion: 15 // minutos solicitados
+        };
+
+        function calcularPuntajeFila(carrera, sentadillas, lagartijas, plancha, barras, apnea, nado, flotacion) {
+            let puntosSumados = 0;
+            let metricasEvaluadas = 0;
+
+            // 1. Procesamiento Carrera 2400m (A menor tiempo, mayor puntuación. Base: 12 min / 720 seg es excelente)
+            if (carrera && carrera.trim() !== "" && carrera !== "0") {
+                let partes = carrera.split(":");
+                let segundosTotales = 0;
+                if(partes.length === 2) {
+                    segundosTotales = (parseInt(partes[0]) * 60) + parseInt(partes[1]);
+                } else {
+                    segundosTotales = parseFloat(carrera) * 60; // fallback si ponen directo minutos decimales
+                }
+                
+                if (segundosTotales > 0) {
+                    // Algoritmo inverso: Excelente = 600seg (10 min) o menos. Pésimo = 1020seg (17 min) o más.
+                    let pctCarrera = ((1020 - segundosTotales) / (1020 - 600)) * 100;
+                    puntosSumados += Math.max(0, Math.min(100, pctCarrera));
+                    metricasEvaluadas++;
+                }
+            }
+
+            // Helper para evaluar métricas directas repetitivas
+            const evaluarMetricaDirecta = (valor, maximo) => {
+                if (valor && !isNaN(valor) && parseFloat(valor) > 0) {
+                    let pct = (parseFloat(valor) / maximo) * 100;
+                    puntosSumados += Math.max(0, Math.min(100, pct));
+                    metricasEvaluadas++;
+                }
+            };
+
+            evaluarMetricaDirecta(sentadillas, RANGOS_MAXIMOS.sentadillas);
+            evaluarMetricaDirecta(lagartijas, RANGOS_MAXIMOS.lagartijas);
+            evaluarMetricaDirecta(plancha, RANGOS_MAXIMOS.plancha);
+            evaluarMetricaDirecta(barras, RANGOS_MAXIMOS.barras);
+            evaluarMetricaDirecta(apnea, RANGOS_MAXIMOS.apnea);
+            evaluarMetricaDirecta(nado, RANGOS_MAXIMOS.nado);
+            evaluarMetricaDirecta(flotacion, RANGOS_MAXIMOS.flotacion);
+
+            // Si no tiene registros válidos devuelve 0
+            if (metricasEvaluadas === 0) return 0;
+            
+            // Retorna el promedio del rendimiento general obtenido
+            return (puntosSumados / metricasEvaluadas);
+        }
+
         window.onload = function() {
             fetch(URL_CSV)
                 .then(res => res.text())
                 .then(csv => {
-                    let filas = csv.split("\n").map(f => f.split(","));
+                    // Manejo robusto del CSV parseando comillas para evitar desajustes por comas internas
+                    let filasRaw = csv.split("\n");
+                    let filas = filasRaw.map(f => {
+                        // Regex profesional para separar por comas respetando cadenas entre comillas
+                        return f.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || f.split(",");
+                    });
+
                     let tablaHtml = "";
+                    let sumaPuntajesGlobales = 0;
+                    let contadorRegistrosValidos = 0;
 
                     if (!filas || filas.length <= 1) {
-                        document.getElementById("datos").innerHTML = "<tr><td colspan='13'>Sin registros encontrados</td></tr>";
+                        document.getElementById("datos").innerHTML = "<tr><td colspan='14'>Sin registros encontrados en la base de datos</td></tr>";
                         return;
                     }
 
                     for (let i = 1; i < filas.length; i++) {
                         let fila = filas[i];
-                        if (!fila || fila.length < 10) continue;
+                        if (!fila || fila.length < 11) continue;
 
-                        // Asignación de variables por índice
-                        let evaluador   = fila[0] || "";
-                        let nombre      = fila[1] || "";
-                        let tipo        = fila[2] || "";
-                        let sexo        = (fila[3] || "").trim().toLowerCase();
-                        let carrera     = fila[4] || "";
-                        let sentadillas = fila[5] || "";
-                        let lagartijas  = fila[6] || "";
-                        let plancha     = fila[7] || "";
-                        let barras      = fila[8] || "";
-                        let apnea       = fila[9] || "";
-                        let nado        = fila[10] || "";
-                        let flotacion   = fila[11] || "";
-                        let fechaRaw    = fila[12] || "";
+                        // Asignación estricta de variables mapeando las posiciones nativas del Excel
+                        let evaluador   = (fila[0] || "").replace(/"/g, '');
+                        let nombre      = (fila[1] || "").replace(/"/g, '');
+                        let tipo        = (fila[2] || "").replace(/"/g, '');
+                        let sexo        = (fila[3] || "").replace(/"/g, '').trim().toLowerCase();
+                        let carrera     = (fila[4] || "").replace(/"/g, '');
+                        let sentadillas = (fila[5] || "").replace(/"/g, '');
+                        let lagartijas  = (fila[6] || "").replace(/"/g, '');
+                        let plancha     = (fila[7] || "").replace(/"/g, '');
+                        let barras      = (fila[8] || "").replace(/"/g, '');
+                        let apnea       = (fila[9] || "").replace(/"/g, '');
+                        let nado        = (fila[10] || "").replace(/"/g, '');
+                        let flotacion   = (fila[11] || "").replace(/"/g, '');
+                        let sampleFecha = (fila[12] || "").replace(/"/g, '').replace(/\r?\n|\r/g, " ").trim();
 
-                        // 1. Limpieza de Fecha (quita comillas y saltos de línea detectados en la imagen)
-                        let fechaLimpia = fechaRaw.replace(/[Entropy"']/g, '').replace(/\r?\n|\r/g, " ").trim();
+                        // Invocar cálculo del motor analítico
+                        let resultadoEficiencia = calcularPuntajeFila(carrera, sentadillas, lagartijas, plancha, barras, apnea, nado, flotacion);
+                        
+                        if(resultadoEficiencia > 0) {
+                            sumaPuntajesGlobales += resultadoEficiencia;
+                            contadorRegistrosValidos++;
+                        }
 
-                        // 2. Clase de fila según sexo
                         let claseSexo = (sexo === "hombre") ? "fila-hombre" : "fila-mujer";
 
-                        // 3. Construcción de la fila con 13 celdas exactas
+                        // Construcción limpia con las 14 columnas equilibradas de forma simétrica
                         tablaHtml += `
                         <tr class="${claseSexo}">
-                            <td style="font-weight:600">${evaluador}</td>
-                            <td>${nombre}</td>
+                            <td style="font-weight:600; color: #ffffff;">${evaluador}</td>
+                            <td style="text-align: left; font-weight:500;">${nombre}</td>
                             <td>${tipo}</td>
-                            <td style="text-transform: capitalize;">${sexo}</td>
-                            <td class="terrestre">${carrera}</td>
-                            <td class="terrestre">${sentadillas}</td>
-                            <td class="terrestre">${lagartijas}</td>
-                            <td class="terrestre">${plancha}</td>
-                            <td class="terrestre">${barras}</td>
-                            <td class="acuatico">${apnea}</td>
-                            <td class="acuatico">${nado}</td>
-                            <td class="acuatico">${flotacion}</td>
-                            <td style="white-space: normal; font-size: 11px; color: #64748b;">${fechaLimpia}</td>
+                            <td style="text-transform: capitalize; font-weight: 500;">${sexo}</td>
+                            <td class="terrestre">${carrera || "-"}</td>
+                            <td class="terrestre">${sentadillas || "-"}</td>
+                            <td class="terrestre">${lagartijas || "-"}</td>
+                            <td class="terrestre">${plancha || "-"}</td>
+                            <td class="terrestre">${barras || "-"}</td>
+                            <td class="acuatico">${apnea || "-"}</td>
+                            <td class="acuatico">${nado || "-"}</td>
+                            <td class="acuatico">${flotacion || "-"}</td>
+                            <td class="puntaje-final">${resultadoEficiencia.toFixed(1)}%</td>
+                            <td style="white-space: nowrap; font-size: 11px; color: var(--text-muted);">${sampleFecha}</td>
                         </tr>`;
                     }
+                    
                     document.getElementById("datos").innerHTML = tablaHtml;
+
+                    // Inyección de métricas globales en la parte superior de la UI
+                    document.getElementById("stat-total").innerText = contadorRegistrosValidos;
+                    if(contadorRegistrosValidos > 0) {
+                        let promFinal = (sumaPuntajesGlobales / contadorRegistrosValidos).toFixed(1);
+                        document.getElementById("stat-promedio").innerText = promFinal + "%";
+                    }
+
                 })
                 .catch(err => {
-                    console.error("Error:", err);
-                    document.getElementById("datos").innerHTML = "<tr><td colspan='13'>Error al cargar los datos</td></tr>";
+                    console.error("Error crítico de lectura:", err);
+                    document.getElementById("datos").innerHTML = "<tr><td colspan='14' style='color:#f87171;'>Fallo de conexión remota con el repositorio de datos.</td></tr>";
                 });
         }
 
         function exportarExcel() {
             const table = document.querySelector("table");
-            const wb = XLSX.utils.table_to_book(table, { sheet: "Resultados" });
-            XLSX.writeFile(wb, "Reporte_Evaluaciones.xlsx");
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Resultados Finales" });
+            XLSX.writeFile(wb, "Reporte_Eficiencia_Pruebas_Fisicas.xlsx");
         }
 
         function cerrarSesion() {
-            if(confirm("¿Desea cerrar la sesión?")) {
+            if(confirm("¿Desea cerrar la sesión del sistema?")) {
                 window.location.href = "index.html"; 
             }
         }
