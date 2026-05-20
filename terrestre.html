@@ -13,7 +13,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             /* Fondo café suave con textura sutil o color sólido si no encuentra la imagen */
             background-color: #4b3621; 
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("fondoter.png");
+            background-image: linear-gradient(rgba(0, 2, 0, 0.5), rgba(0, 0, 0, 0.5)), url("fondoter.png");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -103,48 +103,16 @@
 
     <script>
         function guardarTerrestre() {
-    let evaluador = sessionStorage.getItem("evaluador") || "No definido";
+            let evaluador = sessionStorage.getItem("evaluador") || "No definido";
 
-    let nombre = document.getElementById("nombre").value;
-    let sexo = document.getElementById("sexo").value;
-    let edad = document.getElementById("edad").value;
+            let nombre = document.getElementById("nombre").value;
+            let sexo = document.getElementById("sexo").value;
+            let edad = document.getElementById("edad").value;
 
-    if (nombre === "" || sexo === "" || edad === "") {
-        alert("Por favor completa los campos obligatorios (Nombre, Sexo y Edad)");
-        return;
-    }
-
-    // OBJETO REESTRUCTURADO EN EL ORDEN EXACTO DE LA TABLA DE REPORTES:
-    // Columnas del Reporte: 1.Evaluador, 2.Nombre, 3.Tipo, 4.Sexo, 5.Carrera, etc...
-    let datos = {
-        Evaluador: evaluador,
-        Nombre: nombre,
-        Tipo: "Terrestre",
-        Sexo: sexo,
-        "2400m": document.getElementById("carrera").value || "-",
-        Sentadillas: document.getElementById("sentadillas").value || "0",
-        Lagartijas: document.getElementById("lagartijas").value || "0",
-        Plancha: document.getElementById("plancha").value || "-",
-        Barras: document.getElementById("barras").value || "0",
-        Apnea: "-",     // Relleno para mantener alineadas las columnas acuáticas en el CSV
-        Nado: "-",      // Relleno
-        Flotacion: "-", // Relleno
-        Fecha: new Date().toLocaleString()
-    };
-
-    // GUARDADO LOCAL
-    let registros = JSON.parse(localStorage.getItem("resultados")) || [];
-    registros.push(datos);
-    localStorage.setItem("resultados", JSON.stringify(registros));
-
-    // ENVÍO A LA NUBE
-    if (typeof guardarEnNube === "function") {
-        guardarEnNube(datos);
-    }
-
-    alert("Resultados de Pruebas Terrestres guardados correctamente");
-    document.getElementById("form").reset();
-}
+            if (nombre === "" || sexo === "" || edad === "") {
+                alert("Por favor completa los campos obligatorios (Nombre, Sexo y Edad)");
+                return;
+            }
 
             let datos = {
                 Tipo: "Terrestre",
